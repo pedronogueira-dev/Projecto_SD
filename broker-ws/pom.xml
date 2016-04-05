@@ -40,6 +40,12 @@
             <artifactId>jaxws-rt</artifactId>
             <version>2.2.10</version>
         </dependency>
+        <!-- UDDI -->
+        <dependency>
+            <groupId>pt.ulisboa.tecnico.sdis</groupId>
+            <artifactId>uddi-naming</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!-- JMockit - must appear before JUnit -->
         <dependency>
             <groupId>org.jmockit</groupId>
