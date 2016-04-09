@@ -1,18 +1,19 @@
 # Projeto de Sistemas Distribuídos 2015-2016 #
 
-Grupo de SD ... - Campus ...
+Grupo de SD 39 - Campus Alameda
 *(preencher com número do grupo de SD no Fénix e depois apagar esta linha)*
 
-... ... ...
+Pedro Nogueira 67055 17pedro.n@gmail.com
 
-... ... ...
+Joao Miguens 79201 jp_miguens_adidas@hotmail.com
 
-... ... ...
+Joao Pestana 79515 joaovascopestana@gmail.com
 *(preencher com nome, número e email de membro do grupo e depois apagar esta linha)*
 
 
 Repositório:
-[tecnico-distsys/C_XX-project](https://github.com/tecnico-distsys/C_XX-project/)
+[tecnico-distsys/a_39-project](https://github.com/tecnico-distsys/a_39-project/)
+
 
 -------------------------------------------------------------------------------
 

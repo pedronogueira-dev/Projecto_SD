@@ -24,7 +24,7 @@ public class BrokerPort implements BrokerPortType{
 	//_SouthRegion=Arrays.asList("Setúbal","Évora", "Portalegre", "Beja", "Faro");
 
 	public String ping(String name){
-		return null;
+		return "Connected: "+ name;
 	}
 
 	public String requestTransport(String origin, String destination, int price) throws UnknownLocationFault_Exception,
