@@ -121,19 +121,31 @@ public class TransporterPort implements TransporterPortType {
 		job.setJobPrice(priceProposal);
 		job.setJobIdentifier("Transporter"+_transporterNumber+": Transport number: "+_jobId);
 		
-		//How to decide job?!
-		
-		return null;
+		job.setJobState(JobStateView.PROPOSED);
+		return job;
+
 	}
 
 	public JobView decideJob(String id,boolean accept)throws BadJobFault_Exception{
+		for(JobView job : _jobs){
+			if(job.getJobIdentifier().equals(id)){
+				if(accept){
+					job.setJobState(JobStateView.ACCEPTED);
+					return job;
+				}else{
+					job.setJobState(JobStateView.REJECTED);
+					}
+			}
+		}
 		return null;
 	}
 
 	public JobView jobStatus(String id){
 		JobView chosenJob=null;
 		for(JobView j : _jobs){
-			j.getJobIdentifier().equals(id);
+			if(j.getJobIdentifier().equals(id)){
+				
+			}
 		}
 		return null;
 	}
