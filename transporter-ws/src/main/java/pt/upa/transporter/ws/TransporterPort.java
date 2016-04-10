@@ -1,5 +1,6 @@
 package pt.upa.transporter.ws;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -18,8 +19,9 @@ public class TransporterPort implements TransporterPortType {
 	private List<String> _NorthRegion=Arrays.asList("Porto", "Braga", "Viana do Castelo", "Vila Real", "Braganca");
 	private List<String> _CenterRegion=Arrays.asList("Lisboa", "Leiria", "Santarem", "Castelo Branco", "Coimbra", "Aveiro", "Viseu", "Guarda");
 	private List<String> _SouthRegion=Arrays.asList("Setúbal","Évora", "Portalegre", "Beja", "Faro");
-	private int _transporterNumber=0;
 	
+	private int _transporterNumber=0;
+	private List<JobView> _jobs=new ArrayList<JobView>();
 	
 	public TransporterPort(int number){
 		_transporterNumber=number;
@@ -32,7 +34,7 @@ public class TransporterPort implements TransporterPortType {
 
 		Random rn = new Random();
 		int range;
-		int randomNum;
+		//int randomNum;
 
 		if(price > 100){
 			return 0;
@@ -48,7 +50,7 @@ public class TransporterPort implements TransporterPortType {
 			}while(proposal>0&&proposal<=price);
 			return proposal;
 		}		
-			int topPercentage = 100;
+			//int topPercentage = 100;
 			Double result;
 			do{
 			result=rn.nextDouble() * price;
