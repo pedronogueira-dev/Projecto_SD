@@ -119,7 +119,7 @@ public class TransporterPort implements TransporterPortType {
 		job.setJobOrigin(origin);
 		job.setJobDestination(destination);
 		job.setJobPrice(priceProposal);
-		job.setJobIdentifier(""+_jobId);
+		job.setJobIdentifier("Transporter"+_transporterNumber+": Transport number: "+_jobId);
 		
 		//How to decide job?!
 		
@@ -131,13 +131,18 @@ public class TransporterPort implements TransporterPortType {
 	}
 
 	public JobView jobStatus(String id){
+		JobView chosenJob=null;
+		for(JobView j : _jobs){
+			j.getJobIdentifier().equals(id);
+		}
 		return null;
 	}
 
 	public List<JobView> listJobs(){
-		return null;
+		return _jobs;
 	}
 
 	public void clearJobs(){
+		_jobs.clear();
 	}
 }
