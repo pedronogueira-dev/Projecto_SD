@@ -22,6 +22,7 @@ public class TransporterPort implements TransporterPortType {
 	
 	private int _transporterNumber=0;
 	private List<JobView> _jobs=new ArrayList<JobView>();
+	private int _jobId=0;
 	
 	public TransporterPort(int number){
 		_transporterNumber=number;
@@ -37,7 +38,7 @@ public class TransporterPort implements TransporterPortType {
 		//int randomNum;
 
 		if(price > 100){
-			return 0;
+			return price;//no proposal is made
 		}
 		if(price <=10){
 			do{
@@ -78,6 +79,50 @@ public class TransporterPort implements TransporterPortType {
 	}
 
 	public JobView requestJob(String origin,String destination,int price)throws BadLocationFault_Exception, BadPriceFault_Exception{
+		
+		//CHECKING IF ORIGIN AND DESTINATION ARE KNOWN TO THE SYSTEM
+			if(!(_NorthRegion.contains(origin)||
+					_CenterRegion.contains(origin)||
+					_SouthRegion.contains(origin))){
+				throw new BadLocationFault_Exception(origin,new BadLocationFault());
+			}else{
+				if(!(_NorthRegion.contains(destination)||
+						_CenterRegion.contains(destination)||
+						_SouthRegion.contains(destination))){
+					throw new BadLocationFault_Exception(destination,new BadLocationFault());
+				}
+			}
+		//CHECKING IF PRICE IS GREATER THAN 0
+		if(price<0){
+			throw new BadPriceFault_Exception("Invalid price: "+price, new BadPriceFault());
+		}
+		
+		//CHECKING IF CURRENT TRANSPORTER OPERATES WITHIN BOTH THE ORIGIN AND DESTINATION REGIONS
+		if(_transporterNumber%2==0){
+			if(!((_NorthRegion.contains(origin)||_CenterRegion.contains(origin))
+					&&(_NorthRegion.contains(destination)||_CenterRegion.contains(destination))
+					)){
+				return null;
+			}
+		}else{
+			if(!((_NorthRegion.contains(origin)||_CenterRegion.contains(origin))
+						&&(_NorthRegion.contains(destination)||_CenterRegion.contains(destination))
+						)){
+					return null;
+			}
+		}
+		
+		int priceProposal=priceCalculator(price);
+		
+		JobView job =new JobView();
+		job.setCompanyName(""+_transporterNumber);
+		job.setJobOrigin(origin);
+		job.setJobDestination(destination);
+		job.setJobPrice(priceProposal);
+		job.setJobIdentifier(""+_jobId);
+		
+		//How to decide job?!
+		
 		return null;
 	}
 
