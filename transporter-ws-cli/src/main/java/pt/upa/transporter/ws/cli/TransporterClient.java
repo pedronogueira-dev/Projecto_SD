@@ -21,23 +21,23 @@ public class TransporterClient {
 
 
     public JobView requestJob(String origin,String destination,int price) throws BadLocationFault_Exception, BadPriceFault_Exception{
-    	return null;
+    	return _tc.requestJob(origin, destination, price);
     }
 
     public JobView decideJob(String id,boolean accept) throws BadJobFault_Exception{
-    	return null;
+    	return _tc.decideJob(id, accept);
     }
 
    	public JobView jobStatus(String id){
-   		return null;
+   		return _tc.jobStatus(id);
    	}
 
     public List<JobView> listJobs(){
-    	return null;
+    	return _tc.listJobs();
     }
 
     public void clearJobs(){
-
+    	_tc.clearJobs();
     }
 
 }

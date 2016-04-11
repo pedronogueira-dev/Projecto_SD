@@ -1,6 +1,10 @@
 package pt.upa.transporter;
 
 
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.ws.Endpoint;
 import pt.upa.transporter.ws.TransporterPort;
 
@@ -24,7 +28,17 @@ public class TransporterApplication {
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-			TransporterPort port = new	TransporterPort();
+			String regex ="(\\d+)";
+			String transp=name;
+			String num;
+			int transportId=1;
+			Matcher matcher = Pattern.compile( regex ).matcher( transp);
+			while (matcher.find( ))
+			{
+			num = matcher.group();
+			transportId =new Integer(num);                    
+			}
+			TransporterPort port = new	TransporterPort(transportId);
 			endpoint = Endpoint.create(port);
 
 			// publish endpoint
