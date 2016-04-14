@@ -95,6 +95,7 @@ public class TransporterClientApplication {
 			for(int i=0;i<10;i++){
 				System.out.println("AFTER CHECKING STATUS.");
 				trip=client.jobStatus(trip.getJobIdentifier());
+				Thread.sleep(5000);
 				if(trip==null){
 					break;
 				}

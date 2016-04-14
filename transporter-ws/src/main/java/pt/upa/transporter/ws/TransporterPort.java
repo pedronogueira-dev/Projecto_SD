@@ -5,8 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Date;
 import java.util.TreeMap;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.jws.WebService;
 @WebService(
@@ -23,12 +27,14 @@ public class TransporterPort implements TransporterPortType {
 	private List<String> _CenterRegion=Arrays.asList("Lisboa", "Leiria", "Santarem", "Castelo Branco", "Coimbra", "Aveiro", "Viseu", "Guarda");
 	private List<String> _SouthRegion=Arrays.asList("Setúbal","Évora", "Portalegre", "Beja", "Faro");
 	
-	private Map<String,Date> timers=new TreeMap<String,Date>();
+	//private Map<String,Date> timers=new TreeMap<String,Date>();
 	private Map<String,JobView> jobs=new TreeMap<String,JobView>();
 	private int _transporterNumber=0;
 	private List<JobView> _jobs=new ArrayList<JobView>();
 	private int _jobId=0;
 	private int _maxSeconds=5000;
+	
+	private Timer threadTimer=new Timer();
 	
 	public TransporterPort(int number){
 		_transporterNumber=number;
@@ -40,6 +46,49 @@ public class TransporterPort implements TransporterPortType {
 	private void jobIdDec(){
 		_jobId=_jobId-1;
 	}
+	
+	
+	 class changeTask extends TimerTask {
+		private JobView _jobToChange;
+		private Timer	_time;
+		public changeTask(JobView job,Timer t) {
+			_jobToChange=job;
+			_time=t;
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			ChangeStatus(_jobToChange);
+		}
+
+		public void ChangeStatus(JobView j){
+			int delay;
+			switch(j.getJobState()){
+			case ACCEPTED : j.setJobState(JobStateView.HEADING);
+							System.out.println("CHANGED 1");
+							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
+							_time.schedule(new changeTask(j,_time), delay);
+							break;
+			case HEADING : j.setJobState(JobStateView.ONGOING);
+							System.out.println("CHANGED 2");
+							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
+							_time.schedule(new changeTask(j,_time), delay);
+							break;
+			case ONGOING : j.setJobState(JobStateView.COMPLETED);
+							System.out.println("CHANGED 3");
+							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
+							_time.schedule(new changeTask(j,_time), delay);
+							break;
+			case COMPLETED :System.out.println("ARRIVED");
+							threadTimer.purge();
+							break;
+			default: break;
+			}
+		}
+	}
+	
 	
 	private int priceCalculator(int price){
 		int proposal;
@@ -139,26 +188,13 @@ public class TransporterPort implements TransporterPortType {
 		jobs.put(job.getJobIdentifier(), job);
 		jobIdInc();
 		
+		new changeTask(job,threadTimer);
+		
 		return job;
 
 	}
 	
 
-	private void ChangeStatus(JobView j){
-		switch(j.getJobState()){
-		case ACCEPTED : j.setJobState(JobStateView.HEADING);
-						break;
-		case HEADING : j.setJobState(JobStateView.ONGOING);
-						break;
-		case ONGOING : j.setJobState(JobStateView.COMPLETED);
-						break;
-		case COMPLETED : //_jobs.remove(j);
-						jobs.remove(j.getJobIdentifier());
-						timers.remove(j.getJobIdentifier());
-						break;
-		default: break;
-		}
-	}
 	private Date getChangeTime(){
 		Date d;
 		Random r=new Random();
@@ -181,15 +217,17 @@ public class TransporterPort implements TransporterPortType {
 			}
 			*/
 		if(jobs.containsKey(id)){
+			JobView job =jobs.get(id);
 			if(accept){
-				jobs.get(id).setJobState(JobStateView.ACCEPTED);
-				timers.put(id,getChangeTime());
-				return jobs.get(id);
+				job.setJobState(JobStateView.ACCEPTED);
+				int delay=ThreadLocalRandom.current().nextInt(1000, 5001);
+				threadTimer.schedule(new changeTask(job, threadTimer), delay);
+				return job;
 			}else{
-				JobView j=jobs.get(id);
-				j.setJobState(JobStateView.REJECTED);
-				jobs.remove(id);
-				return j;
+				
+				job.setJobState(JobStateView.REJECTED);
+				//jobs.remove(id);
+				return job;
 			}
 		}
 
@@ -212,10 +250,10 @@ public class TransporterPort implements TransporterPortType {
 		}*/
 		
 		if(jobs.containsKey(id)){
-			time=timers.get(id);
-			if(time.compareTo(new Date(System.currentTimeMillis()))>0){
-				ChangeStatus(jobs.get(id));
-			}
+			//time=timers.get(id);
+			//if(time.compareTo(new Date(System.currentTimeMillis()))>0){
+				//ChangeStatus(jobs.get(id));
+			//}
 			return jobs.get(id);
 		}
 		return null;
@@ -231,7 +269,7 @@ public class TransporterPort implements TransporterPortType {
 	public void clearJobs(){
 		//_jobs.clear();
 		jobs.clear();
-		timers.clear();
+		//timers.clear();
 		_jobId=0;
 	}
 	
