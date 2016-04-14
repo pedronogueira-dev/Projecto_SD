@@ -29,10 +29,8 @@ public class TransporterPort implements TransporterPortType {
 	
 	//private Map<String,Date> timers=new TreeMap<String,Date>();
 	private Map<String,JobView> jobs=new TreeMap<String,JobView>();
-	private int _transporterNumber=0;
-	private List<JobView> _jobs=new ArrayList<JobView>();
+	private int _transporterNumber;
 	private int _jobId=0;
-	private int _maxSeconds=5000;
 	
 	private Timer threadTimer=new Timer();
 	
@@ -61,6 +59,7 @@ public class TransporterPort implements TransporterPortType {
 		public void run() {
 			// TODO Auto-generated method stub
 			ChangeStatus(_jobToChange);
+			this.cancel();
 		}
 
 		public void ChangeStatus(JobView j){
@@ -82,9 +81,10 @@ public class TransporterPort implements TransporterPortType {
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
 			case COMPLETED :System.out.println("ARRIVED");
+							this.cancel();
 							threadTimer.purge();
 							break;
-			default: break;
+			default:break;
 			}
 		}
 	}
@@ -99,9 +99,6 @@ public class TransporterPort implements TransporterPortType {
 		int range;
 		//int randomNum;
 
-		if(price > 100){
-			return price;//no proposal is made
-		}
 		if(price <=10){
 			do{
 				proposal=0;
@@ -140,7 +137,7 @@ public class TransporterPort implements TransporterPortType {
 		return "Transporter"+_transporterNumber+".Transport number:"+_jobId;
 	}
 	public String ping(String name){
-		return "Transporter: "+ name+ " Connected to TransporterServer";
+		return "Transporter: "+ name+ " Connected to TransporterServer"+_transporterNumber;
 	}
 
 	public JobView requestJob(String origin,String destination,int price)throws BadLocationFault_Exception, BadPriceFault_Exception{
@@ -159,7 +156,9 @@ public class TransporterPort implements TransporterPortType {
 		if(price<0){
 			throw new BadPriceFault_Exception("Invalid price: "+price, new BadPriceFault());
 		}
-		
+		if(price >100){
+			return null;
+		}
 		//CHECKING IF CURRENT TRANSPORTER OPERATES WITHIN BOTH THE ORIGIN AND DESTINATION REGIONS
 		if(_transporterNumber%2==0){
 			if(!((_NorthRegion.contains(origin)||_CenterRegion.contains(origin))
@@ -194,28 +193,8 @@ public class TransporterPort implements TransporterPortType {
 
 	}
 	
-
-	private Date getChangeTime(){
-		Date d;
-		Random r=new Random();
-		long delay =(long) (r.nextDouble()*_maxSeconds);
-		d=new Date(System.currentTimeMillis()+delay);
-		return d;
-	}
 	public JobView decideJob(String id,boolean accept)throws BadJobFault_Exception{
-		/*for(JobView job : _jobs){
-			if(job.getJobIdentifier().equals(id)){
-				if(accept){
-					job.setJobState(JobStateView.ACCEPTED);
-					timers.put(job.getJobIdentifier(),getChangeTime());
-					return job;
-				}else{
-					job.setJobState(JobStateView.REJECTED);
-					_jobs.remove(job);
-					return job;
-					}
-			}
-			*/
+
 		if(jobs.containsKey(id)){
 			JobView job =jobs.get(id);
 			if(accept){
@@ -226,7 +205,6 @@ public class TransporterPort implements TransporterPortType {
 			}else{
 				
 				job.setJobState(JobStateView.REJECTED);
-				//jobs.remove(id);
 				return job;
 			}
 		}
@@ -235,25 +213,8 @@ public class TransporterPort implements TransporterPortType {
 	}
 
 	public JobView jobStatus(String id){
-		JobView chosenJob=null;
-		Date time;
-		/*
-		for(JobView j : _jobs){
-			if(j.getJobIdentifier().equals(id)){
-				chosenJob=j;
-				time=timers.get(j.getJobIdentifier());
-				if(time.compareTo(new Date(System.currentTimeMillis()))>0){
-					ChangeStatus(j);
-				}
-				return j;
-			}
-		}*/
 		
 		if(jobs.containsKey(id)){
-			//time=timers.get(id);
-			//if(time.compareTo(new Date(System.currentTimeMillis()))>0){
-				//ChangeStatus(jobs.get(id));
-			//}
 			return jobs.get(id);
 		}
 		return null;
@@ -262,14 +223,11 @@ public class TransporterPort implements TransporterPortType {
 	public List<JobView> listJobs(){
 		List<JobView> jobList=new ArrayList<JobView>();
 			jobList.addAll(jobs.values());
-		//return _jobs;
 			return jobList;
 	}
 
 	public void clearJobs(){
-		//_jobs.clear();
 		jobs.clear();
-		//timers.clear();
 		_jobId=0;
 	}
 	

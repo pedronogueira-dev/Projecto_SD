@@ -27,121 +27,122 @@ public class TransporterClientApplication {
 		String uddiURL = args[0];
 		String name = args[1];
 
-		System.out.printf("Contacting UDDI at %s%n", uddiURL);
-		UDDINaming uddiNaming = new UDDINaming(uddiURL);
-
-		System.out.printf("Looking for '%s'%n", name);
-		String endpointAddress = uddiNaming.lookup(name);
-
-		if (endpointAddress == null) {
-			System.out.println("Not found!");
-			return;
-		} else {
-			System.out.printf("Found %s%n", endpointAddress);
-		}
-
-		System.out.println("Creating stub ...");
-		TransporterService service = new TransporterService();
-		TransporterPortType port = service.getTransporterPort();
-
-		System.out.println("Setting endpoint address ...");
-		BindingProvider bindingProvider = (BindingProvider) port;
-		Map<String, Object> requestContext = bindingProvider.getRequestContext();
-		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
+//		System.out.printf("Contacting UDDI at %s%n", uddiURL);
+//		UDDINaming uddiNaming = new UDDINaming(uddiURL);
+//
+//		System.out.printf("Looking for '%s'%n", name);
+//		String endpointAddress = uddiNaming.lookup(name);
+//
+//		if (endpointAddress == null) {
+//			System.out.println("Not found!");
+//			return;
+//		} else {
+//			System.out.printf("Found %s%n", endpointAddress);
+//		}
+//
+//		System.out.println("Creating stub ...");
+//		TransporterService service = new TransporterService();
+//		TransporterPortType port = service.getTransporterPort();
+//
+//		System.out.println("Setting endpoint address ...");
+//		BindingProvider bindingProvider = (BindingProvider) port;
+//		Map<String, Object> requestContext = bindingProvider.getRequestContext();
+//		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		try {
-			TransporterClient client=new TransporterClient(port);
+			TransporterClient client=new TransporterClient(uddiURL,name);
+//			TransporterClient client=new TransporterClient(port);
 			System.out.println(client.ping("Client1"));
-			
-			System.out.println("------LISTING-----");
-			for(JobView j: client.listJobs()){
-				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
-						"\nTransPortID: "+j.getJobIdentifier()+
-						"\nOrigin: "+j.getJobOrigin()+
-						"\nDestination: "+j.getJobDestination()+
-						"\nPrice: "+j.getJobPrice()+
-						"\nStatus: "+j.getJobState());
-			}
-			System.out.println("---------------------------------");
-			//FIRST REQUEST
-			JobView trip= client.requestJob("Lisboa", "Santarem", 10);
-			System.out.println("JOB REQUEST: LISBOA->SANTAREM, PRICE:10");
-			System.out.println("JOB PROPOSAL:\nCompany Name: "+trip.getCompanyName()+
-											"\nTransPortID: "+trip.getJobIdentifier()+
-											"\nOrigin: "+trip.getJobOrigin()+
-											"\nDestination: "+trip.getJobDestination()+
-											"\nPrice: "+trip.getJobPrice()+
-											"\nStatus: "+trip.getJobState());
-			System.out.println("\n\nAFTER APPROVAL");
-			trip=client.decideJob(trip.getJobIdentifier(), true);
-			System.out.println("APPROVED JOB:\nCompany Name: "+trip.getCompanyName()+
-					"\nTransPortID: "+trip.getJobIdentifier()+
-					"\nOrigin: "+trip.getJobOrigin()+
-					"\nDestination: "+trip.getJobDestination()+
-					"\nPrice: "+trip.getJobPrice()+
-					"\nStatus: "+trip.getJobState());
-			
-			System.out.println("------LISTING-----");
-			for(JobView j: client.listJobs()){
-				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
-						"\nTransPortID: "+j.getJobIdentifier()+
-						"\nOrigin: "+j.getJobOrigin()+
-						"\nDestination: "+j.getJobDestination()+
-						"\nPrice: "+j.getJobPrice()+
-						"\nStatus: "+j.getJobState());
-			}
-			System.out.println("---------------------------------");
-			
-			for(int i=0;i<10;i++){
-				System.out.println("AFTER CHECKING STATUS.");
-				trip=client.jobStatus(trip.getJobIdentifier());
-				Thread.sleep(5000);
-				if(trip==null){
-					break;
-				}
-				System.out.println(trip.getJobIdentifier()+" : "+trip.getJobState());
-			}
-			System.out.println("JOB REQUEST: LEIRIA->SANTAREM, PRICE:100");
-			trip= client.requestJob("Leiria", "Santarem", 100);
-			System.out.println("JOB PROPOSAL:\nCompany Name: "+trip.getCompanyName()+
-											"\nTransPortID: "+trip.getJobIdentifier()+
-											"\nOrigin: "+trip.getJobOrigin()+
-											"\nDestination: "+trip.getJobDestination()+
-											"\nPrice: "+trip.getJobPrice()+
-											"\nStatus: "+trip.getJobState()+"\n");
-			System.out.println("LIST OF JOBS");
-			//System.out.println(client.listJobs()+"\n LENGTH:"+client.listJobs().size());
-			for(JobView j: client.listJobs()){
-				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
-						"\nTransPortID: "+j.getJobIdentifier()+
-						"\nOrigin: "+j.getJobOrigin()+
-						"\nDestination: "+j.getJobDestination()+
-						"\nPrice: "+j.getJobPrice()+
-						"\nStatus: "+j.getJobState());
-			}
-			System.out.println("---------------------------------");
-			System.out.println("\n\nAFTER REFUSAL");
-			trip=client.decideJob(trip.getJobIdentifier(), false);/*
-			System.out.println("REFUSED JOB:\nCompany Name: "+trip.getCompanyName()+
-					"\nTransPortID: "+trip.getJobIdentifier()+
-					"\nOrigin: "+trip.getJobOrigin()+
-					"\nDestination: "+trip.getJobDestination()+
-					"\nPrice: "+trip.getJobPrice()+
-					"\nStatus: "+trip.getJobState());
-					*/
-			System.out.println("LIST OF JOBS");
-			//System.out.println(client.listJobs()+"\n LENGTH:"+client.listJobs().size());
-			//LISTING AFTER REFUSAL
-			for(JobView j: client.listJobs()){
-				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
-						"\nTransPortID: "+j.getJobIdentifier()+
-						"\nOrigin: "+j.getJobOrigin()+
-						"\nDestination: "+j.getJobDestination()+
-						"\nPrice: "+j.getJobPrice()+
-						"\nStatus: "+j.getJobState());
-			}
-			System.out.println("---------------------------------");
-			client.clearJobs();
+//			
+//			System.out.println("------LISTING-----");
+//			for(JobView j: client.listJobs()){
+//				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
+//						"\nTransPortID: "+j.getJobIdentifier()+
+//						"\nOrigin: "+j.getJobOrigin()+
+//						"\nDestination: "+j.getJobDestination()+
+//						"\nPrice: "+j.getJobPrice()+
+//						"\nStatus: "+j.getJobState());
+//			}
+//			System.out.println("---------------------------------");
+//			//FIRST REQUEST
+//			JobView trip= client.requestJob("Lisboa", "Santarem", 10);
+//			JobView trip2= client.requestJob("Lisboa", "Aveiro", 14);
+//			System.out.println("------LISTING-----");
+//			for(JobView j: client.listJobs()){
+//				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
+//						"\nTransPortID: "+j.getJobIdentifier()+
+//						"\nOrigin: "+j.getJobOrigin()+
+//						"\nDestination: "+j.getJobDestination()+
+//						"\nPrice: "+j.getJobPrice()+
+//						"\nStatus: "+j.getJobState());
+//			}
+//			System.out.println("---------------------------------");
+//			System.out.println("\n\nAFTER APPROVAL");
+//			trip=client.decideJob(trip.getJobIdentifier(), true);
+//			trip2=client.decideJob(trip2.getJobIdentifier(), true);
+//			
+//			System.out.println("------LISTING-----");
+//			for(JobView j: client.listJobs()){
+//				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
+//						"\nTransPortID: "+j.getJobIdentifier()+
+//						"\nOrigin: "+j.getJobOrigin()+
+//						"\nDestination: "+j.getJobDestination()+
+//						"\nPrice: "+j.getJobPrice()+
+//						"\nStatus: "+j.getJobState());
+//			}
+//			System.out.println("==================");
+//			
+//			for(int i=0;i<4;i++){
+//				System.out.println("AFTER CHECKING STATUS.");
+//				trip=client.jobStatus(trip.getJobIdentifier());
+//				System.out.println(trip.getJobState());
+//				trip2=client.jobStatus(trip.getJobIdentifier());
+//				System.out.println(trip2.getJobState());
+//				Thread.sleep(5000);
+//				}
+//			
+//				System.out.println(trip.getJobIdentifier()+" : "+trip.getJobState());
+//			System.out.println("JOB REQUEST: LEIRIA->SANTAREM, PRICE:100");
+//			trip= client.requestJob("Leiria", "Santarem", 100);
+//			System.out.println("JOB PROPOSAL:\nCompany Name: "+trip.getCompanyName()+
+//											"\nTransPortID: "+trip.getJobIdentifier()+
+//											"\nOrigin: "+trip.getJobOrigin()+
+//											"\nDestination: "+trip.getJobDestination()+
+//											"\nPrice: "+trip.getJobPrice()+
+//											"\nStatus: "+trip.getJobState()+"\n");
+//			System.out.println("LIST OF JOBS");
+//			//System.out.println(client.listJobs()+"\n LENGTH:"+client.listJobs().size());
+//			for(JobView j: client.listJobs()){
+//				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
+//						"\nTransPortID: "+j.getJobIdentifier()+
+//						"\nOrigin: "+j.getJobOrigin()+
+//						"\nDestination: "+j.getJobDestination()+
+//						"\nPrice: "+j.getJobPrice()+
+//						"\nStatus: "+j.getJobState());
+//			}
+//			System.out.println("---------------------------------");
+//			System.out.println("\n\nAFTER REFUSAL");
+//			trip=client.decideJob(trip.getJobIdentifier(), false);/*
+//			System.out.println("REFUSED JOB:\nCompany Name: "+trip.getCompanyName()+
+//					"\nTransPortID: "+trip.getJobIdentifier()+
+//					"\nOrigin: "+trip.getJobOrigin()+
+//					"\nDestination: "+trip.getJobDestination()+
+//					"\nPrice: "+trip.getJobPrice()+
+//					"\nStatus: "+trip.getJobState());
+//					*/
+//			System.out.println("LIST OF JOBS");
+//			//System.out.println(client.listJobs()+"\n LENGTH:"+client.listJobs().size());
+//			//LISTING AFTER REFUSAL
+//			for(JobView j: client.listJobs()){
+//				System.out.println("JOB:\nCompany Name: "+j.getCompanyName()+
+//						"\nTransPortID: "+j.getJobIdentifier()+
+//						"\nOrigin: "+j.getJobOrigin()+
+//						"\nDestination: "+j.getJobDestination()+
+//						"\nPrice: "+j.getJobPrice()+
+//						"\nStatus: "+j.getJobState());
+//			}
+//			System.out.println("---------------------------------");
+//			client.clearJobs();
 		} catch (Exception pfe) {
 			System.out.println("Caught: " + pfe);
 		}
