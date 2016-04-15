@@ -36,15 +36,16 @@ public class BrokerPort implements BrokerPortType{
 	private int transpId=1;
 	
 	
-	public String ping(String name){
-		String s="";
-		for(TransporterClient t : associatedTransporters.values()){
+ 	public String ping(String name){
+ 		String s="";
+ 		for(TransporterClient t : associatedTransporters.values()){
 			s+=t.ping(name) + "LIGADO" + "\n";
-			System.out.println(t.ping(name));
-		}
-		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
-	}
-
+ 			System.out.println(t.ping(name));
+ 		}
+ 		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
+ 	}
+ 	
+ 	
 	public void registerTransporter() throws JAXRException{
 		String uddiURL="http://localhost:9090";
 		UDDINaming uddiNaming = new UDDINaming(uddiURL);
