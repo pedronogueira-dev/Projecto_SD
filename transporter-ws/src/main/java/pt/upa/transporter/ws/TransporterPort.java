@@ -237,6 +237,8 @@ public class TransporterPort implements TransporterPortType {
 				"\nOrigin: "+trip.getJobOrigin()+
 				"\nDestination: "+trip.getJobDestination()+
 				"\nPrice: "+trip.getJobPrice()+
-				"\nStatus: "+trip.getJobState();
+				"\nStatus: "+trip.getJobState();  
+				
+				
 	}
 }
