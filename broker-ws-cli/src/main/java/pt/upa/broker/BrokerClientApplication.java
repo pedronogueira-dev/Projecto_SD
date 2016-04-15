@@ -49,7 +49,8 @@ public class BrokerClientApplication {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		try {
-			BrokerClient client=new BrokerClient(port);
+			//BrokerClient client = new BrokerClient(port);
+			BrokerClient client = new BrokerClient(endpointAddress);
 			System.out.println(client.ping("Client1"));
 			
 			//client.requestTransport("Santarem", "Lisboa", 10);

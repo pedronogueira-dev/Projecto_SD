@@ -39,7 +39,7 @@ public class BrokerPort implements BrokerPortType{
 	public String ping(String name){
 		String s="";
 		for(TransporterClient t : associatedTransporters.values()){
-			s+=t.ping(name)+"\n";
+			s+=t.ping(name) + "LIGADO" + "\n";
 			System.out.println(t.ping(name));
 		}
 		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
