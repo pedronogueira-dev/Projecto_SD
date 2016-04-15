@@ -51,6 +51,8 @@ public class BrokerClientApplication {
 		try {
 			BrokerClient client=new BrokerClient(port);
 			System.out.println(client.ping("Client1"));
+			
+			//client.requestTransport("Santarem", "Lisboa", 10);
 		} catch (Exception pfe) {
 			System.out.println("Caught: " + pfe);
 		}

@@ -24,7 +24,7 @@
 
         <wsdl.directory>${basedir}/../broker-ws/src/main/resources</wsdl.directory>
         <wsdl.filename>broker.1_0.wsdl</wsdl.filename>
-
+		
         <mainclass>pt.upa.broker.BrokerClientApplication</mainclass>
 
         <ws.name>UpaBroker</ws.name>
@@ -130,6 +130,7 @@
                     <arguments>
                         <argument>${uddi.url}</argument>
                         <argument>${ws.name}</argument>
+                        <argument>${ws.i}</argument>
                     </arguments>
                 </configuration>
             </plugin>

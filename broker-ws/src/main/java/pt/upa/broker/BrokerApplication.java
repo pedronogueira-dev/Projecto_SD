@@ -24,8 +24,9 @@ public class BrokerApplication {
 		UDDINaming uddiNaming = null;
 		try {
 			BrokerPort port = new	BrokerPort();
-			endpoint = Endpoint.create(port);
 			port.registerTransporter();
+			endpoint = Endpoint.create(port);
+			
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
 			endpoint.publish(url);

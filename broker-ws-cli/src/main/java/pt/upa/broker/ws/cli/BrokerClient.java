@@ -18,6 +18,7 @@ public class BrokerClient {
 
 	public BrokerClient(BrokerPortType broker){
 		_bp=broker;
+
 	}
 
 	public String ping(String name){
@@ -26,40 +27,20 @@ public class BrokerClient {
 
 	public String requestTransport(String origin, String destination, int price) throws UnknownLocationFault_Exception,
 	InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception
-	{	/*boolean isNorthern=_NorthRegion.contains(origin);
-		boolean isSouthern=_CenterRegion.contains(origin);
-		boolean isCentral=_SouthRegion.contains(origin);
-
-		if(!isNorthern||!isCentral||!isSouthern){
-			throw UnknownLocationFault_Exception(origin);
-		}
-
-		boolean isNorthern=_NorthRegion.contains(destination);
-		boolean isSouthern=_CenterRegion.contains(destination);
-		boolean isCentral=_SouthRegion.contains(destination);
-
-		if(!isNorthern||!isCentral||!isSouthern){
-			throw UnknownLocationFault_Exception(destination);
-		}
-
-		if(price <0){
-			throw new InvalidPriceFault_Exception(price);
-		}
-		*/
-		//HOW TO CHECK THE LIST?
-		return new String("requestTransport invocation accepted");
+	{	return _bp.requestTransport(origin, destination, price);
 	}
 
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception
 	{
-		return null;
+		return _bp.viewTransport(id);
 	}
 
 	public List<TransportView> listTransports(){
-		return null;
+		return _bp.listTransports();
 	}
 
 	public void clearTransports(){
+		_bp.clearTransports();
 		return;
 	}
 

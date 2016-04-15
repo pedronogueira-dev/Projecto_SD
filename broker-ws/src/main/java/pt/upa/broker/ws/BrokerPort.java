@@ -40,8 +40,9 @@ public class BrokerPort implements BrokerPortType{
 		String s="";
 		for(TransporterClient t : associatedTransporters.values()){
 			s+=t.ping(name)+"\n";
+			System.out.println(t.ping(name));
 		}
-		return name+" Connected to Broker Server. Linked Transporters: "+s;
+		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
 	}
 
 	public void registerTransporter() throws JAXRException{
@@ -92,7 +93,7 @@ public class BrokerPort implements BrokerPortType{
 	public String requestTransport(String origin, String destination, int price) throws UnknownLocationFault_Exception,
 	InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception
 	{	
-		
+		System.out.println("TRANSPORT REQUESTED:\n FROM: "+origin+" TO: "+destination+"\nPRICE: "+price);
 		
 		TransportView transp =new TransportView();
 		transp.setOrigin(origin);
@@ -175,6 +176,13 @@ public class BrokerPort implements BrokerPortType{
 		transportList.replace(transp.getId(), convertJobIntoTransport(bestOption, transp.getId()));
 		transportToJob.put(transp.getId(), bestOption.getJobIdentifier());
 		acceptedJobs.put(bestOption.getJobIdentifier(), bestOption);
+
+		System.out.println("TRANSPORT:\n"
+							+ "T-ID: "+ transp.getId()
+							+ "TRANSPORTER COMPANY: "+ transp.getTransporterCompany()
+							+ "FROM: "+transp.getOrigin()+ "TO: "+ transp.getDestination()
+							+ "PRICE: "+transp.getPrice()
+							+ "T-STATE: "+transp.getState());
 		
 		return transp.getId();
 	}
