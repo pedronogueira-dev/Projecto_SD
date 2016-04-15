@@ -52,6 +52,9 @@ public class BrokerClientApplication {
 			//BrokerClient client = new BrokerClient(port);
 			BrokerClient client = new BrokerClient(endpointAddress);
 			System.out.println(client.ping("Client1"));
+			//System.out.println("Request:");
+			//String id = client.requestTransport("Lisboa", "Santarem", 12);
+			//System.out.println(id);
 			
 			//client.requestTransport("Santarem", "Lisboa", 10);
 		} catch (Exception pfe) {

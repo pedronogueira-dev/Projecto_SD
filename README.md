@@ -80,6 +80,8 @@ mvn clean install
 cd SD/A_39-project/transporter-ws
 mvn clean generate-sources install
 mvn exec:java
+mvn -Dws.i=2 exec:java
+mvn -Dws.i=3 exec:java
 ```
 
 

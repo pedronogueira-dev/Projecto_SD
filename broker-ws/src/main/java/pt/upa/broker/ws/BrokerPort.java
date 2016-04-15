@@ -52,7 +52,7 @@ public class BrokerPort implements BrokerPortType{
 		Collection<String> registeredTransportServers = uddiNaming.list("UpaTransporter%");
 		
 		for(String name : registeredTransportServers){
-			System.out.println("CONNECTING TO: "+name);
+			//System.out.println("CONNECTING TO: "+name);
 			//String endpointAddress = uddiNaming.lookup(name);
 			TransporterClient c= new TransporterClient(name);
 			associatedTransporters.put(name, c);
