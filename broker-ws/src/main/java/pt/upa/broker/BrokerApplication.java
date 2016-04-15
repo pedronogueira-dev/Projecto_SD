@@ -25,7 +25,7 @@ public class BrokerApplication {
 		try {
 			BrokerPort port = new	BrokerPort();
 			endpoint = Endpoint.create(port);
-
+			port.registerTransporter();
 			// publish endpoint
 			System.out.printf("Starting %s%n", url);
 			endpoint.publish(url);

@@ -27,11 +27,11 @@ public class TransporterClientApplication {
 		String uddiURL = args[0];
 		String name = args[1];
 
-//		System.out.printf("Contacting UDDI at %s%n", uddiURL);
-//		UDDINaming uddiNaming = new UDDINaming(uddiURL);
-//
-//		System.out.printf("Looking for '%s'%n", name);
-//		String endpointAddress = uddiNaming.lookup(name);
+		System.out.printf("Contacting UDDI at %s%n", uddiURL);
+		UDDINaming uddiNaming = new UDDINaming(uddiURL);
+
+		System.out.printf("Looking for '%s'%n", name);
+		String endpointAddress = uddiNaming.lookup(name);
 //
 //		if (endpointAddress == null) {
 //			System.out.println("Not found!");
@@ -50,7 +50,7 @@ public class TransporterClientApplication {
 //		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		try {
-			TransporterClient client=new TransporterClient(uddiURL,name);
+			TransporterClient client=new TransporterClient(endpointAddress);
 //			TransporterClient client=new TransporterClient(port);
 			System.out.println(client.ping("Client1"));
 //			

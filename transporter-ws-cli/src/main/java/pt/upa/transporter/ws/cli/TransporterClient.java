@@ -21,12 +21,9 @@ public class TransporterClient {
 
 	private TransporterPortType _tc;
 	
-	public TransporterClient(String uddiURL, String name) throws JAXRException{
-		//System.out.printf("Contacting UDDI at %s%n", uddiURL);
-		UDDINaming uddiNaming = new UDDINaming(uddiURL);
+	public TransporterClient(String endpointAddress) throws JAXRException{
 
-		//System.out.printf("Looking for '%s'%n", name);
-		String endpointAddress = uddiNaming.lookup(name);
+		System.out.printf("Looking for '%s'%n", endpointAddress);
 
 		if (endpointAddress == null) {
 			System.out.println("Not found!");
@@ -45,10 +42,12 @@ public class TransporterClient {
 		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 		_tc=port;
 	}
+	//
+	//public TransporterClient(TransporterPortType tc){
+	//		_tc=tc;
+	//}
 	
-	public TransporterClient(TransporterPortType tc){
-			_tc=tc;
-	}
+
 	public String ping(String name){
 		return _tc.ping(name);
 	}

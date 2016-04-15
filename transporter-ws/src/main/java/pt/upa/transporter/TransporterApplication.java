@@ -29,18 +29,6 @@ public class TransporterApplication {
 		Endpoint endpoint = null;
 		UDDINaming uddiNaming = null;
 		try {
-//			String regex ="(\\d+)";
-//			String transp=name;
-//			String num;
-//			int transportId=1;
-//			Matcher matcher = Pattern.compile( regex ).matcher( transp);
-//			while (matcher.find( ))
-//			{
-//			num = matcher.group();
-//			transportId =new Integer(num);                    
-//			}
-			//Scanner in=new Scanner(name).useDelimiter("^[0-9]+");
-			//String value=name.replaceAll("[^0-9]", "");
 			int transportId=Integer.parseInt(args[3]);
 			TransporterPort port = new	TransporterPort(transportId);
 			endpoint = Endpoint.create(port);
