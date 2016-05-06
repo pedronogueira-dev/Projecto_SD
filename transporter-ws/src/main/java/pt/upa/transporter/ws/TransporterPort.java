@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Date;
+//import java.util.Date;
 import java.util.TreeMap;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,15 +29,26 @@ public class TransporterPort implements TransporterPortType {
 	
 	//private Map<String,Date> timers=new TreeMap<String,Date>();
 	private Map<String,JobView> jobs=new TreeMap<String,JobView>();
-	private int _transporterNumber;
 	private int _jobId=0;
+	private TransporterEndpointManager endpoint;
+	private int _transporterNumber;
 	
 	private Timer threadTimer=new Timer();
 	
-	public TransporterPort(int number){
-		_transporterNumber=number;
+	public TransporterPort(TransporterEndpointManager endpoint){
+		this.endpoint=endpoint;
+		_transporterNumber=endpoint.getTransporterNumber();
+		
+		System.out.println("PORT OF SERVER NUMBER:::"+_transporterNumber);
 	}
 
+	public TransporterPort(int i){
+		this.endpoint=null;
+		_transporterNumber=i;
+		
+		System.out.println("PORT OF SERVER NUMBER:::"+_transporterNumber);
+	}
+	
 	private void jobIdInc(){
 		_jobId=_jobId+1;
 	}
@@ -67,16 +78,22 @@ public class TransporterPort implements TransporterPortType {
 			switch(j.getJobState()){
 			case ACCEPTED : j.setJobState(JobStateView.HEADING);
 							System.out.println("CHANGED 1");
+							this.cancel();
+							threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
 			case HEADING : j.setJobState(JobStateView.ONGOING);
 							System.out.println("CHANGED 2");
+							this.cancel();
+							threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
 			case ONGOING : j.setJobState(JobStateView.COMPLETED);
 							System.out.println("CHANGED 3");
+							this.cancel();
+							threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
@@ -99,6 +116,8 @@ public class TransporterPort implements TransporterPortType {
 		int range;
 		//int randomNum;
 
+		
+		System.out.println("CALCULATING PRICE");
 		if(price <=10){
 			do{
 				proposal=0;
@@ -134,13 +153,16 @@ public class TransporterPort implements TransporterPortType {
 	}
 
 	private String jobIdString(){
-		return "Transporter"+_transporterNumber+".Transport number:"+_jobId;
+		return "UpaTransporter"+_transporterNumber+".Transport number:"+_jobId;
 	}
 	public String ping(String name){
-		return "Transporter: "+ name+ " Connected to TransporterServer"+_transporterNumber;
+		System.out.println("Incoming request from: "+name);
+		return "Requested Connection from: "+ name+ ". Accepted, Now Connected to UpaTransporter"+_transporterNumber;
 	}
 
 	public JobView requestJob(String origin,String destination,int price)throws BadLocationFault_Exception, BadPriceFault_Exception{
+		System.out.println("INCOMING JOB REQUEST:: ORIGIN - "+origin+ " DESTINATION - "+destination + " PRICE - "+ price);
+		
 			if(!(_NorthRegion.contains(origin)||
 					_CenterRegion.contains(origin)||
 					_SouthRegion.contains(origin))){
@@ -152,6 +174,8 @@ public class TransporterPort implements TransporterPortType {
 					throw new BadLocationFault_Exception(destination,new BadLocationFault());
 				}
 			}
+			//String operate = (_transporterNumber%2 == 0) ? "NORTE|CENTER":"CENTER|SUL";
+			//System.out.println("ORIGIN AND DESTINATION ARE KNOWN TO THE SYSTEM\n\n"+"Transporter number:"+ _transporterNumber+"\nOperates on "+ operate);
 		//CHECKING IF PRICE IS GREATER THAN 0
 		if(price<0){
 			throw new BadPriceFault_Exception("Invalid price: "+price, new BadPriceFault());
@@ -187,8 +211,8 @@ public class TransporterPort implements TransporterPortType {
 		jobs.put(job.getJobIdentifier(), job);
 		jobIdInc();
 		
-		new changeTask(job,threadTimer);
-		
+		//
+		System.out.println(jobtoString(job));
 		return job;
 
 	}
