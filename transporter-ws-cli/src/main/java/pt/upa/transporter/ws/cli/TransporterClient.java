@@ -19,58 +19,97 @@ import javax.xml.ws.BindingProvider;
 
 public class TransporterClient {
 
-	private TransporterPortType _tc;
+	private TransporterPortType port;
+	private TransporterService service =null;
+
+	private String uddiURL = null;
+	private String wsName = null;
+	private String wsURL = null;
 	
-	public TransporterClient(String endpointAddress) throws JAXRException{
-
-		System.out.printf("Looking for '%s'%n", endpointAddress);
-
-		if (endpointAddress == null) {
-			System.out.println("Not found!");
-			return;
-		} else {
-			System.out.printf("Found %s%n", endpointAddress);
-		}
-
-		//System.out.println("Creating stub ...");
-		TransporterService service = new TransporterService();
-		TransporterPortType port = service.getTransporterPort();
-
-		//System.out.println("Setting endpoint address ...");
-		BindingProvider bindingProvider = (BindingProvider) port;
-		Map<String, Object> requestContext = bindingProvider.getRequestContext();
-		requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
-		_tc=port;
+	public String getWsURL(){
+		return wsURL;
 	}
-	//
-	//public TransporterClient(TransporterPortType tc){
-	//		_tc=tc;
-	//}
+	
+	private boolean verbose =false;
+	public boolean isVerbose(){
+		return verbose;
+	}
+	
+	public void setVerbose(){
+		this.verbose=verbose;
+	}
+	
+	public TransporterClient(String wsUrl)throws TransporterClientException{
+		this.wsURL = wsURL;
+		createStub();
+	}
+	
+	public TransporterClient(String uddiURL, String wsName) throws TransporterClientException{
+		this.uddiURL = uddiURL;
+		this.wsName = wsName;
+		uddiLookup();
+		createStub();
+	}
+	
+	private void uddiLookup() throws TransporterClientException{
+		try{
+			if(verbose)
+				System.out.printf("Contacting UDDI at %s%n", uddiURL);
+			UDDINaming uddiNaming = new UDDINaming(uddiURL);
+			
+			if(verbose)
+				System.out.printf("Looking for '%s'%n", wsName);
+			wsURL = uddiNaming.lookup(wsName);
+		}catch(Exception e){
+			String msg = String.format("Client failed lookup on UDDI at %s!", uddiURL);
+			throw new TransporterClientException(msg);
+		}
+		
+		if(wsURL == null){
+			String msg = String.format("Service with name %s not found on UDDI at %s", wsName, uddiURL);
+			throw new TransporterClientException(msg);
+			}
+	}
+	
+	private void createStub(){
+		if(verbose)
+			System.out.println("Creating stub ...");
+		service = new TransporterService();
+		port = service.getTransporterPort();
+		
+		if(wsURL != null){
+			if(verbose)
+				System.out.println("Setting endpoint address ...");
+			BindingProvider bindingProvider = (BindingProvider) port;
+			Map<String, Object> requestContext = bindingProvider.getRequestContext();
+			requestContext.put(ENDPOINT_ADDRESS_PROPERTY, wsURL);
+		}
+	}
 	
 
 	public String ping(String name){
-		return _tc.ping(name);
+		return port.ping(name);
 	}
 
 
     public JobView requestJob(String origin,String destination,int price) throws BadLocationFault_Exception, BadPriceFault_Exception{
-    	return _tc.requestJob(origin, destination, price);
+    	return port.requestJob(origin, destination, price);
     }
 
     public JobView decideJob(String id,boolean accept) throws BadJobFault_Exception{
-    	return _tc.decideJob(id, accept);
+    	return port.decideJob(id, accept);
     }
 
    	public JobView jobStatus(String id){
-   		return _tc.jobStatus(id);
+   		return port.jobStatus(id);
    	}
 
     public List<JobView> listJobs(){
-    	return _tc.listJobs();
+    	return port.listJobs();
     }
 
     public void clearJobs(){
-    	_tc.clearJobs();
+    	port.clearJobs();
     }
 
 }
