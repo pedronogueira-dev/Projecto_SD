@@ -35,7 +35,7 @@ public class TransporterClient {
 		return verbose;
 	}
 	
-	public void setVerbose(){
+	public void setVerbose(boolean verbose){
 		this.verbose=verbose;
 	}
 	
