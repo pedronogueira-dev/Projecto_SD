@@ -157,7 +157,8 @@ public class TransporterPort implements TransporterPortType {
 	}
 	public String ping(String name){
 		System.out.println("Incoming request from: "+name);
-		return "Requested Connection from: "+ name+ ". Accepted, Now Connected to UpaTransporter"+_transporterNumber;
+		System.out.println( "Requested Connection from: "+ name+ ". Accepted, Now Connected to UpaTransporter"+_transporterNumber);
+		return "UpaTransporter"+_transporterNumber;
 	}
 
 	public JobView requestJob(String origin,String destination,int price)throws BadLocationFault_Exception, BadPriceFault_Exception{

@@ -34,31 +34,53 @@ public class BrokerPort implements BrokerPortType{
 	private Map<String, JobView> acceptedJobs=new TreeMap<String, JobView>();
 
 	private int transpId=1;
+	private BrokerEndpointManager endpoint;
 	
+	
+	public BrokerPort(BrokerEndpointManager endpoint){
+		this.endpoint=endpoint;
+
+	}
+
+
+//	@Override
+//	public String ping(String name) {
+//		System.out.println("INCOMING REQUEST OF [" + name+"]");
+//		return "Connected to Broker Server";
+//	}
+
 	
  	public String ping(String name){
  		String s="";
+		this.associatedTransporters=endpoint.getTransporters();
  		for(TransporterClient t : associatedTransporters.values()){
-			s+=t.ping(name) + "LIGADO" + "\n";
+			s+=t.ping(name) + "Connected" + "\n";
  			System.out.println(t.ping(name));
  		}
  		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
  	}
+// 	
  	
- 	
-	public void registerTransporter() throws JAXRException{
-		String uddiURL="http://localhost:9090";
-		UDDINaming uddiNaming = new UDDINaming(uddiURL);
-		Collection<String> registeredTransportServers = uddiNaming.list("UpaTransporter%");
-		
-		for(String name : registeredTransportServers){
-			//System.out.println("CONNECTING TO: "+name);
-			//String endpointAddress = uddiNaming.lookup(name);
-			TransporterClient c= new TransporterClient(name);
-			associatedTransporters.put(name, c);
-		}
-	}
-	
+//	public void registerTransporter() throws JAXRException{
+//		String uddiURL="http://localhost:9090";
+//		UDDINaming uddiNaming = new UDDINaming(uddiURL);
+//		Collection<String> registeredTransportServers = uddiNaming.list("UpaTransporter%");
+//		
+//		for(String name : registeredTransportServers){
+//			//System.out.println("CONNECTING TO: "+name);
+//			//String endpointAddress = uddiNaming.lookup(name);
+//			TransporterClient c;
+//			try {
+//				c = new TransporterClient(name);
+//				associatedTransporters.put(name, c);
+//			} catch (TransporterClientException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//		}
+//	}
+//	
 	
 	private TransportStateView convertState(JobView j){
 		TransportStateView ts;

@@ -39,8 +39,9 @@ public class TransporterClient {
 		this.verbose=verbose;
 	}
 	
-	public TransporterClient(String wsUrl)throws TransporterClientException{
+	public TransporterClient(String wsURL)throws TransporterClientException{
 		this.wsURL = wsURL;
+		System.out.println("Created TransporterClient with :"+wsURL);
 		createStub();
 	}
 	
@@ -50,6 +51,7 @@ public class TransporterClient {
 		uddiLookup();
 		createStub();
 	}
+	
 	
 	private void uddiLookup() throws TransporterClientException{
 		try{
