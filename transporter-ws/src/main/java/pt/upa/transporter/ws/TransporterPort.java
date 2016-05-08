@@ -32,7 +32,6 @@ public class TransporterPort implements TransporterPortType {
 	private int _jobId=0;
 	private TransporterEndpointManager endpoint;
 	private int _transporterNumber;
-	
 	private Timer threadTimer=new Timer();
 	
 	public TransporterPort(TransporterEndpointManager endpoint){
@@ -201,7 +200,7 @@ public class TransporterPort implements TransporterPortType {
 		int priceProposal= priceCalculator(price);
 		
 		JobView job =new JobView();
-		job.setCompanyName(""+_transporterNumber);
+		job.setCompanyName("UpaTransporter"+_transporterNumber);
 		job.setJobOrigin(origin);
 		job.setJobDestination(destination);
 		job.setJobPrice(priceProposal);

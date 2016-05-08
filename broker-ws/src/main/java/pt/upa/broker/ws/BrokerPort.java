@@ -100,12 +100,18 @@ public class BrokerPort implements BrokerPortType{
 	}
 	
 	private TransportView convertJobIntoTransport(JobView j, String id){
+		//System.out.println("\n\nCONVERTING JOB INTO TRANSPORT");
+		
 		TransportView transp = new TransportView();
 		
 		transp.setOrigin(j.getJobOrigin());
 		transp.setDestination(j.getJobDestination());
 		transp.setPrice(j.getJobPrice());
+		
+		//System.out.println("CompanyName (job)"+j.getCompanyName());
 		transp.setTransporterCompany(j.getCompanyName());
+		//System.out.println("CompanyName (transport, after conversion)"+j.getCompanyName()+"\n\n");
+		
 		transp.setState(convertState(j));
 		transp.setId(id);
 		return transp;
@@ -125,7 +131,8 @@ public class BrokerPort implements BrokerPortType{
 		
 		if(price<0)
 			throw new InvalidPriceFault_Exception("Desired price mus be greater than 10, given price was: "+price, new InvalidPriceFault());
-		System.out.println("TRANSPORT REQUESTED:\n FROM: "+origin+" TO: "+destination+"\nPRICE: "+price);
+		
+		System.out.println(">>>TRANSPORT REQUESTED:\n FROM: "+origin+" TO: "+destination+" PRICE: "+price+"\n");
 		
 		TransportView transp =new TransportView();
 		transp.setOrigin(origin);
@@ -205,16 +212,33 @@ public class BrokerPort implements BrokerPortType{
 			////////////////////////////////////////////
 		}
 		
-		transportList.replace(transp.getId(), convertJobIntoTransport(bestOption, transp.getId()));
+		System.out.println("BEST JOB FOUND:\n"
+							+"ID: "+bestOption.getJobIdentifier()
+							+"\nFrom: "+bestOption.getJobOrigin()+" To: "+bestOption.getJobDestination()
+							+"\nCompany: "+bestOption.getCompanyName()
+							+"\nPrice: "+bestOption.getJobPrice()
+							+"\nState: "+bestOption.getJobState()+
+							"\n");
+		
+		transp=convertJobIntoTransport(bestOption, transp.getId());
+		
+		//transportList.replace(transp.getId(), convertJobIntoTransport(bestOption, transp.getId()));
+		
+		transportList.replace(transp.getId(), transp);
+		
 		transportToJob.put(transp.getId(), bestOption.getJobIdentifier());
+		
 		acceptedJobs.put(bestOption.getJobIdentifier(), bestOption);
 
-		System.out.println("TRANSPORT:\n"
-							+ "T-ID: "+ transp.getId()
-							+ "TRANSPORTER COMPANY: "+ transp.getTransporterCompany()
-							+ "FROM: "+transp.getOrigin()+ "TO: "+ transp.getDestination()
-							+ "PRICE: "+transp.getPrice()
-							+ "T-STATE: "+transp.getState());
+		transp=transportList.get(transp.getId());
+		
+		System.out.println("Result:"
+							+ "\nT-ID: "+ transp.getId()
+							+ "\nTRANSPORTER COMPANY: "+ transp.getTransporterCompany()
+							+ "\nFROM: "+transp.getOrigin()+ " TO: "+ transp.getDestination()
+							+ "\nPRICE: "+transp.getPrice()
+							+ "\nT-STATE: "+transp.getState()
+							+"\n");
 		
 		return transp.getId();
 	}
