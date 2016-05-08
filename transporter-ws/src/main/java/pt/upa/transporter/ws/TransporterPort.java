@@ -181,7 +181,7 @@ public class TransporterPort implements TransporterPortType {
 			throw new BadPriceFault_Exception("Invalid price: "+price, new BadPriceFault());
 		}
 		if(price >100){
-			return null;
+			return null; 
 		}
 		//CHECKING IF CURRENT TRANSPORTER OPERATES WITHIN BOTH THE ORIGIN AND DESTINATION REGIONS
 		if(_transporterNumber%2==0){
