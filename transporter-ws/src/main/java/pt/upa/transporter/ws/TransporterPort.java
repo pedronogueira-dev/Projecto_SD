@@ -134,19 +134,27 @@ public class TransporterPort implements TransporterPortType {
 			result=rn.nextDouble() * price;
 			}while(result<0||result>100);
 			proposal= (int)Math.round(result);
+			System.out.println("\n\nProposta inicial com desconto:"+proposal+ " (preço original: "+price+")");
 			if(price%2 ==0){
+				System.out.print("Preço Par:");
 				if(_transporterNumber%2==0){
 					proposal=(int)(price - result);
+					System.out.println("\tEven Transporter: "+proposal);
 				}else{
 					proposal=(int)(price + result);
+					System.out.println("\tOdd Transporter: "+proposal);
 				}
 			}else{
+				System.out.print("Odd Price: ");
 				if(_transporterNumber%2==0){
 					proposal=(int)(price + result);
+					System.out.println("\tEven Transporter: "+proposal);
 				}else{
 					proposal=(int)(price - result);
+					System.out.println("\tOdd Transporter: "+proposal);
 				}
 			}
+			
 			return proposal;
 	
 	}

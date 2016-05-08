@@ -172,6 +172,7 @@ public class BrokerPort implements BrokerPortType{
 				selectedTransporters.put(bestOption.getJobIdentifier(), c);
 			}
 		}
+		
 		if(jobList.isEmpty()){
 			transportList.get(transp.id).setState(TransportStateView.FAILED);
 			throw new UnavailableTransportFault_Exception("", new UnavailableTransportFault());
@@ -205,6 +206,11 @@ public class BrokerPort implements BrokerPortType{
 					bestOption=j;
 				}
 			}
+		}
+		
+		if(bestOption.getJobPrice()>price){
+			transportList.get(transp.id).setState(TransportStateView.FAILED);
+			throw new UnavailableTransportPriceFault_Exception("", new UnavailableTransportPriceFault());
 		}
 		
 		try {
