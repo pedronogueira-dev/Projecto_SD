@@ -247,11 +247,15 @@ public class BrokerPort implements BrokerPortType{
 	{
 		if(associatedTransporters ==null)
 			this.associatedTransporters=endpoint.getTransporters();
-			
+		if(id==null){
+			throw new UnknownTransportFault_Exception("Invalid id. Transport Id must not be null", new UnknownTransportFault());
+		}
 		TransportView t = transportList.get(id);
-		if(id==null||t==null){
+		
+		if(t==null){
 			throw new UnknownTransportFault_Exception("Couldn't find Transport: "+id, new UnknownTransportFault());
 		}
+		
 		String jId = transportToJob.get(id);
 		JobView j=acceptedJobs.get(jId);
 		j=associatedTransporters.get(j.getCompanyName()).jobStatus(j.getJobIdentifier());
