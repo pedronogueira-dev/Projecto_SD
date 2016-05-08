@@ -218,10 +218,17 @@ public class TransporterPort implements TransporterPortType {
 
 	}
 	
-	public JobView decideJob(String id,boolean accept)throws BadJobFault_Exception{
+public JobView decideJob(String id,boolean accept)throws BadJobFault_Exception{
+		
+		if(id==null || id.equals(""))
+				throw new BadJobFault_Exception("Job: "+id+" NOT FOUND", new BadJobFault());
 
-		if(jobs.containsKey(id)){
+		
+		//if(jobs.containsKey(id)){
 			JobView job =jobs.get(id);
+			if(job.getJobState()!= JobStateView.PROPOSED)
+				throw new BadJobFault_Exception("Job: "+id+" NOT FOUND", new BadJobFault());
+
 			if(accept){
 				job.setJobState(JobStateView.ACCEPTED);
 				int delay=ThreadLocalRandom.current().nextInt(1000, 5001);
@@ -232,16 +239,20 @@ public class TransporterPort implements TransporterPortType {
 				job.setJobState(JobStateView.REJECTED);
 				return job;
 			}
-		}
+		//}
+		
 
-		throw new BadJobFault_Exception("Job: "+id+" NOT FOUND", new BadJobFault());
 	}
 
 	public JobView jobStatus(String id){
 		
+		if(id==null || id.equals(""))
+			return null;
+
 		if(jobs.containsKey(id)){
 			return jobs.get(id);
 		}
+		
 		return null;
 	}
 

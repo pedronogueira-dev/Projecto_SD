@@ -28,7 +28,7 @@ import pt.upa.transporter.ws.cli.*;
 )
 public class BrokerPort implements BrokerPortType{
 
-	private Map<String, TransporterClient> associatedTransporters=new TreeMap<String, TransporterClient>();
+	private Map<String, TransporterClient> associatedTransporters=null;//new TreeMap<String, TransporterClient>();
 	private Map<String, TransportView> transportList=new TreeMap<String, TransportView>();
 	private Map<String,String> transportToJob=new TreeMap<String,String>();
 	private Map<String, JobView> acceptedJobs=new TreeMap<String, JobView>();
@@ -39,6 +39,7 @@ public class BrokerPort implements BrokerPortType{
 	
 	public BrokerPort(BrokerEndpointManager endpoint){
 		this.endpoint=endpoint;
+		//System.out.println(endpoint.getTransporters());
 
 	}
 
@@ -52,7 +53,10 @@ public class BrokerPort implements BrokerPortType{
 	
  	public String ping(String name){
  		String s="";
-		this.associatedTransporters=endpoint.getTransporters();
+		if(associatedTransporters ==null)
+			this.associatedTransporters=endpoint.getTransporters();
+		System.out.println(endpoint.getTransporters());
+
  		for(TransporterClient t : associatedTransporters.values()){
 			s+=t.ping(name) + "Connected" + "\n";
  			System.out.println(t.ping(name));
@@ -116,6 +120,11 @@ public class BrokerPort implements BrokerPortType{
 	public String requestTransport(String origin, String destination, int price) throws UnknownLocationFault_Exception,
 	InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception
 	{	
+		if(associatedTransporters ==null)
+			this.associatedTransporters=endpoint.getTransporters();
+		
+		if(price<0)
+			throw new InvalidPriceFault_Exception("Desired price mus be greater than 10, given price was: "+price, new InvalidPriceFault());
 		System.out.println("TRANSPORT REQUESTED:\n FROM: "+origin+" TO: "+destination+"\nPRICE: "+price);
 		
 		TransportView transp =new TransportView();
@@ -212,8 +221,11 @@ public class BrokerPort implements BrokerPortType{
 
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception
 	{
+		if(associatedTransporters ==null)
+			this.associatedTransporters=endpoint.getTransporters();
+			
 		TransportView t = transportList.get(id);
-		if(t==null){
+		if(id==null||t==null){
 			throw new UnknownTransportFault_Exception("Couldn't find Transport: "+id, new UnknownTransportFault());
 		}
 		String jId = transportToJob.get(id);
@@ -227,6 +239,8 @@ public class BrokerPort implements BrokerPortType{
 	}
 
 	public List<TransportView> listTransports(){
+		if(associatedTransporters ==null)
+			this.associatedTransporters=endpoint.getTransporters();
 		List<TransportView> list= new ArrayList<TransportView>();
 		list.addAll(transportList.values());
 		return list;

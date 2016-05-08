@@ -98,7 +98,7 @@ public class BrokerEndpointManager {
 			try {
 				c = new TransporterClient(uddiURL,wsName);
 				String upaTransporterName =c.ping("BROKER SERVER");
-				System.out.println(upaTransporterName);
+				System.out.println(">>>"+upaTransporterName);
 				associatedTransporters.put(upaTransporterName, c);
 			} catch (TransporterClientException e) {
 				// TODO Auto-generated catch block
