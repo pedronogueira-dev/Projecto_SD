@@ -128,7 +128,10 @@ public class BrokerPort implements BrokerPortType{
 	{	
 		if(associatedTransporters ==null)
 			this.associatedTransporters=endpoint.getTransporters();
-		
+		if(origin==null)
+			throw new UnknownLocationFault_Exception("Origin must be provided. On input as: "+origin, new UnknownLocationFault());
+		if(destination==null)
+			throw new UnknownLocationFault_Exception("Destination must be provided. On input as: "+destination, new UnknownLocationFault());
 		if(price<0)
 			throw new InvalidPriceFault_Exception("Desired price mus be greater than 10, given price was: "+price, new InvalidPriceFault());
 		
@@ -171,7 +174,7 @@ public class BrokerPort implements BrokerPortType{
 		}
 		if(jobList.isEmpty()){
 			transportList.get(transp.id).setState(TransportStateView.FAILED);
-			//throw new UnavailableTransportFault_Exception(e.getMessage(), new UnavailableTransportFault());
+			throw new UnavailableTransportFault_Exception("", new UnavailableTransportFault());
 		}
 		
 		/////////////////////////////////
