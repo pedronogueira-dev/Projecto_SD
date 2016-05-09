@@ -2,6 +2,7 @@ package pt.upa.transporter.ws;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -28,7 +29,7 @@ public class TransporterPort implements TransporterPortType {
 	private List<String> _SouthRegion=Arrays.asList("Setúbal","Évora", "Portalegre", "Beja", "Faro");
 	
 	//private Map<String,Date> timers=new TreeMap<String,Date>();
-	private Map<String,JobView> jobs=new TreeMap<String,JobView>();
+	private LinkedHashMap<String,JobView> jobs=new LinkedHashMap<String,JobView>();
 	private int _jobId=0;
 	private TransporterEndpointManager endpoint;
 	private int _transporterNumber;
@@ -76,36 +77,39 @@ public class TransporterPort implements TransporterPortType {
 			int delay;
 			switch(j.getJobState()){
 			case ACCEPTED : j.setJobState(JobStateView.HEADING);
-							System.out.println("CHANGED 1");
-							this.cancel();
-							threadTimer.purge();
+							System.out.println(j.getJobIdentifier() +" from Accepted to Heading");
+							//this.cancel();
+							//threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
 			case HEADING : j.setJobState(JobStateView.ONGOING);
-							System.out.println("CHANGED 2");
-							this.cancel();
-							threadTimer.purge();
+							System.out.println(j.getJobIdentifier() +" from Heading to Ongoing");
+							//this.cancel();
+							//threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
 			case ONGOING : j.setJobState(JobStateView.COMPLETED);
-							System.out.println("CHANGED 3");
-							this.cancel();
-							threadTimer.purge();
+							System.out.println(j.getJobIdentifier() +" from Ongoing to Completed");
+							//this.cancel();
+							//threadTimer.purge();
 							delay=ThreadLocalRandom.current().nextInt(1000, 5001);
 							_time.schedule(new changeTask(j,_time), delay);
 							break;
-			case COMPLETED :System.out.println("ARRIVED");
-							this.cancel();
-							threadTimer.purge();
+			case COMPLETED :System.out.println(j.getJobIdentifier() +"Is already Completed");
+							//this.cancel();
+							//threadTimer.purge();
 							break;
 			default:break;
 			}
 		}
 	}
 	
-	
+	public void stop(){
+		threadTimer.cancel();
+		threadTimer.purge();
+	}
 	private int priceCalculator(int price){
 		int proposal;
 		int maximum =10;

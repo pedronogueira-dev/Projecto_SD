@@ -180,6 +180,7 @@ public class TransporterEndpointManager {
 				System.out.printf("Caught exception when stopping: %s%n", e);
 			}
 		}
+		this.portImpl.stop();
 		this.portImpl = null;
 		unpublishFromUDDI();
 	}
