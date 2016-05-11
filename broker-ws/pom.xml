@@ -4,8 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
-	<!-- Please replace 'cxx' below with your c (campus) with a (Alameda) / 
-		t (Tagus); and your group number with two digits. Then delete this comment. -->
 	<groupId>pt.upa.a39</groupId>
 	<artifactId>broker-ws</artifactId>
 	<version>1.0-SNAPSHOT</version>
@@ -21,12 +19,16 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<wsdl.directory>src/main/resources</wsdl.directory>
-		<wsdl.filename>broker.1_0.wsdl</wsdl.filename>
+		<wsdl.filename>broker.2_0.wsdl</wsdl.filename>
 
 		<mainclass>pt.upa.broker.BrokerApplication</mainclass>
-
+		<!-- <ws.i>0</ws.i>
+		<ws.port>808${ws.i}</ws.port>
+		<ws.url>http://localhost:${ws.port}/broker-ws/endpoint</ws.url>
+		-->
 		<ws.url>http://localhost:8080/broker-ws/endpoint</ws.url>
-
+		<ws.type>Central</ws.type>
+		
 		<ws.name>UpaBroker</ws.name>
 		<uddi.url>http://localhost:9090</uddi.url>
 	</properties>
@@ -124,6 +126,7 @@
 						<argument>${uddi.url}</argument>
 						<argument>${ws.name}</argument>
 						<argument>${ws.url}</argument>
+						<argument>${ws.type}</argument>
 					</arguments>
 				</configuration>
 			</plugin>

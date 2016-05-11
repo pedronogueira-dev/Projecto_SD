@@ -20,7 +20,7 @@ import pt.upa.transporter.ws.cli.*;
 
 @WebService(
     endpointInterface="pt.upa.broker.ws.BrokerPortType",
-    wsdlLocation="broker.1_0.wsdl",
+    wsdlLocation="broker.2_0.wsdl",
     name="BrokerWebService",
     portName="BrokerPort",
     targetNamespace="http://ws.broker.upa.pt/",
@@ -34,8 +34,97 @@ public class BrokerPort implements BrokerPortType{
 	private Map<String, JobView> acceptedJobs=new TreeMap<String, JobView>();
 
 	private int transpId=1;
+	/**
+	 * @return the associatedTransporters
+	 */
+	public Map<String, TransporterClient> getAssociatedTransporters() {
+		return associatedTransporters;
+	}
+
+
+	/**
+	 * @param associatedTransporters the associatedTransporters to set
+	 */
+	public void setAssociatedTransporters(Map<String, TransporterClient> associatedTransporters) {
+		this.associatedTransporters = associatedTransporters;
+	}
+
+
+	/**
+	 * @return the transportList
+	 */
+	public Map<String, TransportView> getTransportList() {
+		return transportList;
+	}
+
+
+	/**
+	 * @param transportList the transportList to set
+	 */
+	public void setTransportList(Map<String, TransportView> transportList) {
+		this.transportList = transportList;
+	}
+
+
+	/**
+	 * @return the transportToJob
+	 */
+	public Map<String, String> getTransportToJob() {
+		return transportToJob;
+	}
+
+
+	/**
+	 * @param transportToJob the transportToJob to set
+	 */
+	public void setTransportToJob(Map<String, String> transportToJob) {
+		this.transportToJob = transportToJob;
+	}
+
+
+	/**
+	 * @return the acceptedJobs
+	 */
+	public Map<String, JobView> getAcceptedJobs() {
+		return acceptedJobs;
+	}
+
+
+	/**
+	 * @param acceptedJobs the acceptedJobs to set
+	 */
+	public void setAcceptedJobs(Map<String, JobView> acceptedJobs) {
+		this.acceptedJobs = acceptedJobs;
+	}
+
+
+	/**
+	 * @return the transpId
+	 */
+	public int getTranspId() {
+		return transpId;
+	}
+
+
+	/**
+	 * @param transpId the transpId to set
+	 */
+	public void setTranspId(int transpId) {
+		this.transpId = transpId;
+	}
+
+
 	private BrokerEndpointManager endpoint;
 	
+	private boolean isBackup=false;
+	
+	public void setIsBackup(boolean isBackup){
+		this.isBackup=isBackup;
+	}
+	
+	public boolean getIsBackup(){
+		return isBackup;
+	}
 	
 	public BrokerPort(BrokerEndpointManager endpoint){
 		this.endpoint=endpoint;
@@ -53,9 +142,10 @@ public class BrokerPort implements BrokerPortType{
 	
  	public String ping(String name){
  		String s="";
+ 		System.out.println("Incoming Connection from: "+name);
 		if(associatedTransporters ==null)
 			this.associatedTransporters=endpoint.getTransporters();
-		System.out.println(endpoint.getTransporters());
+		System.out.println("Transporters List: "+endpoint.getTransporters());
 
  		for(TransporterClient t : associatedTransporters.values()){
 			s+=t.ping(name) + "Connected" + "\n";
@@ -296,4 +386,15 @@ public class BrokerPort implements BrokerPortType{
 		
 		return;
 	}
+
+
+	@Override
+	public void brokerConsistencyManagement() throws BrokerConsistencyManagementFault_Exception {
+		// TODO Auto-generated method stub
+		System.out.println("Replicating Primary Server information to the Backup");
+		
+		return;
+	}
+	
+	
 }

@@ -1,14 +1,18 @@
 package pt.upa.broker.ws;
 
+import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.registry.JAXRException;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Endpoint;
 
 import pt.ulisboa.tecnico.sdis.ws.uddi.UDDINaming;
+
 import pt.upa.transporter.ws.cli.TransporterClient;
 import pt.upa.transporter.ws.cli.TransporterClientException;
 
@@ -16,10 +20,37 @@ public class BrokerEndpointManager {
 
 	private Map<String, TransporterClient> associatedTransporters = new TreeMap<String,TransporterClient>();
 	
+	
+	/** Broker port type*/
+	private boolean brokerIsMain=false;
+	
+	public void setBrokerType(boolean isMain){
+		brokerIsMain=isMain;
+	}
+	
+	public boolean brokerIsMain(){
+		return brokerIsMain;
+	}
+	
+	/** Broker secundary server*/
+	private communicationPort secundaryBroker = null;
+	//private BrokerClient	secundaryBroker = null;
+	
 	/** UDDI naming server location */
 	private String uddiURL = null;
 	/** Web Service name */
 	private String wsName = null;
+
+	/**
+	 * @return the secundaryBroker
+	 */
+	public communicationPort getSecundaryBroker() {
+		return secundaryBroker;
+	}
+
+	/**
+	 * @param secundaryBroker the secundaryBroker to set
+	 */
 
 	/** Get Web Service UDDI publication name */
 	public String getWsName() {
@@ -59,6 +90,46 @@ public class BrokerEndpointManager {
 	}
 
 	/** constructor with provided UDDI location, WS name, and WS URL */
+	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL, String type) {
+		this(uddiURL,wsName,wsURL);
+		
+		if(!type.equals("Central")){
+//			try{
+//				registerSecundaryServer();
+//			}catch(Exception e){
+//				System.out.println("NO SECUNDARY/BACKUP BROKERS REGISTERED ON UDDI!");
+//			}
+		//}else{
+			System.out.println("Secundary Server");
+			this.wsName="UpaBrokerBackup";
+			this.wsURL = "http://localhost:8099/broker-ws/endpoint";
+			//portImpl=new BrokerPort(this);
+			portImpl.setIsBackup(true);
+		}
+	}
+	
+	
+	private void registerSecundaryServer() throws JAXRException, Exception {
+		// TODO Auto-generated method stub
+		
+		if(portImpl.getIsBackup())
+			return;
+		Collection<String> registeredBrokers = uddiNaming.list("UpaBrokerBackup");
+		System.out.println("Broker List:\n"+registeredBrokers);
+		System.out.println("\n\nCONNECTING TO SecundaryBroker:");
+		for(String s : registeredBrokers){
+			if(!s.equals(wsURL)){
+				secundaryBroker= new communicationPort(s);
+				continue;
+			}
+		}
+		if(secundaryBroker!=null){
+			secundaryBroker.port.ping("::Main Broker Server::");
+			return;}
+		throw new Exception("");
+	}
+
+	/** constructor with provided UDDI location, WS name, and WS URL */
 	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL) {
 		this.uddiURL = uddiURL;
 		this.wsName = wsName;
@@ -72,7 +143,7 @@ public class BrokerEndpointManager {
 		this.wsURL = wsURL;
 	}
 
-	/**				*/
+	/**	*/
 	private String extractTransporterNum(String url){
 		String parsed = url.replaceAll("[\\D]*","" );
 		int transporterNumber;
@@ -85,6 +156,8 @@ public class BrokerEndpointManager {
 	/** Transporter register 
 	 * @throws JAXRException */
 	public void registerTransporter() throws JAXRException{
+		if(portImpl.getIsBackup())
+			return;
 		String wsName;
 		
 		Collection<String> registeredTransportServers = uddiNaming.list("UpaTransporter%");
@@ -131,6 +204,13 @@ public class BrokerEndpointManager {
 		}
 		publishToUDDI();
 		registerTransporter();
+		
+		try{
+			registerSecundaryServer();
+		}catch(Exception e){
+			System.out.println("NO SECUNDARY/BACKUP BROKERS REGISTERED ON UDDI!");
+		}
+		
 	}
 
 	public void awaitConnections() {
@@ -163,6 +243,7 @@ public class BrokerEndpointManager {
 		}
 		this.portImpl = null;
 		unpublishFromUDDI();
+		//secundaryBroker.promoteServer();
 	}
 
 	/* UDDI */
@@ -202,4 +283,98 @@ public class BrokerEndpointManager {
 			}
 		}
 	}
+	
+	
+	
+	/////////////////////////////////////////////////////////
+	////	Inner Class to establish communications with
+	////				Broker Servers
+	/////////////////////////////////////////////////////////
+	private class communicationPort{
+		/** WS service */
+		BrokerService service = null;
+
+		/** WS port (port type is the interface, port is the implementation) */
+		BrokerPortType port = null;
+
+		/** UDDI server URL */
+		private String uddiURL = null;
+
+		/** WS name */
+		private String wsName = null;
+
+		/** WS endpoint address */
+		private String wsURL = null; // default value is defined inside WSDL
+
+		public String getWsURL() {
+			return wsURL;
+		}
+
+		/** output option **/
+		private boolean verbose = false;
+
+		public boolean isVerbose() {
+			return verbose;
+		}
+
+		public void setVerbose(boolean verbose) {
+			this.verbose = verbose;
+		}
+		
+		/** constructor with provided web service URL */
+		public communicationPort(String wsURL) {
+			this.wsURL = wsURL;
+			createStub();
+		}
+
+		/** constructor with provided UDDI location and name */
+		public communicationPort(String uddiURL, String wsName){
+			this.uddiURL = uddiURL;
+			this.wsName = wsName;
+			uddiLookup();
+			createStub();
+		}
+
+		/** UDDI lookup */
+		private void uddiLookup(){
+			try {
+				if (verbose)
+					System.out.printf("Contacting UDDI at %s%n", uddiURL);
+				UDDINaming uddiNaming = new UDDINaming(uddiURL);
+
+				if (verbose)
+					System.out.printf("Looking for '%s'%n", wsName);
+				wsURL = uddiNaming.lookup(wsName);
+
+			} catch (Exception e) {
+				String msg = String.format("Client failed lookup on UDDI at %s!",
+						uddiURL);
+			}
+
+			if (wsURL == null) {
+				String msg = String.format(
+						"Service with name %s not found on UDDI at %s", wsName,
+						uddiURL);
+			}
+		}
+		
+		/** Stub creation and configuration */
+		private void createStub() {
+			if (verbose)
+				System.out.println("Creating stub ...");
+			service = new BrokerService();
+			port = service.getBrokerPort();
+
+			if (wsURL != null) {
+				if (verbose)
+					System.out.println("Setting endpoint address ...");
+				BindingProvider bindingProvider = (BindingProvider) port;
+				Map<String, Object> requestContext = bindingProvider
+						.getRequestContext();
+				requestContext.put(ENDPOINT_ADDRESS_PROPERTY, wsURL);
+			}
+		}
+
+	}
+	
 }

@@ -23,7 +23,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <wsdl.directory>${basedir}/../broker-ws/src/main/resources</wsdl.directory>
-        <wsdl.filename>broker.1_0.wsdl</wsdl.filename>
+        <wsdl.filename>broker.2_0.wsdl</wsdl.filename>
 		
         <mainclass>pt.upa.broker.BrokerClientApplication</mainclass>
 

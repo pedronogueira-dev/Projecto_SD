@@ -19,6 +19,7 @@ public class BrokerApplication {
 		String uddiURL = null;
 		String wsName = null;
 		String wsURL = null;
+		String type = null;
 
 		// Create server implementation object, according to options
 		BrokerEndpointManager endpoint = null;
@@ -29,7 +30,8 @@ public class BrokerApplication {
 			uddiURL = args[0];
 			wsName = args[1];
 			wsURL = args[2];
-			endpoint = new BrokerEndpointManager(uddiURL, wsName, wsURL);
+			type = args[3];
+			endpoint = new BrokerEndpointManager(uddiURL, wsName, wsURL, type);
 			endpoint.setVerbose(true);
 		}
 
