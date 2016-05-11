@@ -15,6 +15,7 @@ import pt.upa.transporter.ws.BadJobFault_Exception;
 import pt.upa.transporter.ws.BadLocationFault_Exception;
 import pt.upa.transporter.ws.BadPriceFault;
 import pt.upa.transporter.ws.BadPriceFault_Exception;
+import pt.upa.transporter.ws.JobStateView;
 import pt.upa.transporter.ws.JobView;
 import pt.upa.transporter.ws.cli.*;
 
@@ -175,7 +176,19 @@ public class BrokerPort implements BrokerPortType{
 //		}
 //	}
 //	
-	
+	private String stateToString(JobStateView s){
+		switch(s){
+		case PROPOSED : return "P";
+		case ACCEPTED : return "A";
+		case REJECTED : return "R";
+		case HEADING : return "H";
+		case ONGOING : return "O";
+		case COMPLETED : return "C";
+		default: return null;
+		}
+	}
+ 	
+ 	
 	private TransportStateView convertState(JobView j){
 		TransportStateView ts;
 		switch(j.getJobState()){
@@ -210,6 +223,8 @@ public class BrokerPort implements BrokerPortType{
 	private String generateId(){
 		String transportName= "Transport number: "+ transpId;
 		transpId+=1;
+		
+		endpoint.getSecundaryBroker().port.updateTransportId(transpId);
 		return transportName;
 	}
 	
@@ -326,9 +341,11 @@ public class BrokerPort implements BrokerPortType{
 		transportList.replace(transp.getId(), transp);
 		
 		transportToJob.put(transp.getId(), bestOption.getJobIdentifier());
+		endpoint.getSecundaryBroker().port.updateTransportToDo(transp.getId(), bestOption.getJobIdentifier());
 		
 		acceptedJobs.put(bestOption.getJobIdentifier(), bestOption);
-
+		endpoint.getSecundaryBroker().port.updateAcceptedJobs(bestOption.getJobIdentifier(), bestOption.getJobIdentifier(), bestOption.getJobOrigin(), bestOption.getJobDestination(), bestOption.getJobPrice(), stateToString(bestOption.getJobState()));
+		
 		transp=transportList.get(transp.getId());
 		
 		System.out.println("Result:"
@@ -338,6 +355,8 @@ public class BrokerPort implements BrokerPortType{
 							+ "\nPRICE: "+transp.getPrice()
 							+ "\nT-STATE: "+transp.getState()
 							+"\n");
+		
+		endpoint.getSecundaryBroker().port.updateTransportList(transp.getId(), transp);
 		
 		return transp.getId();
 	}
@@ -383,6 +402,13 @@ public class BrokerPort implements BrokerPortType{
 		acceptedJobs.clear();
 
 		transpId=1;
+//		if(endpoint.getSecundaryBroker()!=null)
+//			endpoint.getSecundaryBroker().clear();
+		
+		System.out.println("End OF ClearTransports");
+		System.out.println("has secundary broker? "+endpoint.getSecundaryBroker());
+		if(endpoint.getSecundaryBroker()!=null)
+			endpoint.getSecundaryBroker().port.clearTransports();
 		
 		return;
 	}
@@ -396,7 +422,7 @@ public class BrokerPort implements BrokerPortType{
 		return;
 	}
 
-
+//FIX
 	@Override
 	public void promoteToMain() throws PromoteToMainFault_Exception {
 		// TODO Auto-generated method stub
@@ -427,6 +453,82 @@ public class BrokerPort implements BrokerPortType{
 		
 		endpoint.awaitConnections();
 		
+	}
+
+
+
+	@Override
+	public void updateTransportId(int id) {
+		// TODO Auto-generated method stub
+		System.out.println("-----Updating Transport number. Input was: "+id);
+		transpId=id;
+		System.out.println("----------------------------------------");
+	}
+
+
+	@Override
+	public void updateTransportToDo(String transportId, String jobID) {
+		// TODO Auto-generated method stub
+		System.out.println("-----Updating TransportToDo Map. Input was: TransportID = "+transportId + "<> JobID = "+jobID);
+		transportToJob.put(transportId, jobID);
+		System.out.println("----------------------------------------");
+	}
+
+	private JobStateView convertStringToJobState(String state){
+		switch(state){
+		case "P":return JobStateView.PROPOSED;
+		case "A":return JobStateView.ACCEPTED;
+		case "O":return JobStateView.ONGOING;
+		case "H":return JobStateView.HEADING;
+		case "C":return JobStateView.COMPLETED;
+		case "R":return JobStateView.REJECTED;
+		}
+		return null;
+	}
+
+	@Override
+	public void updateAcceptedJobs(String companyName, String jobId, String origin, String destination, int price,
+			String state) {
+		// TODO Auto-generated method stub
+		System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
+		JobView job = new JobView();
+		job.setCompanyName(companyName);
+		job.setJobIdentifier(jobId);
+		job.setJobOrigin(origin);
+		job.setJobDestination(destination);
+		job.setJobPrice(price);
+		job.setJobState(convertStringToJobState(state));
+		System.out.println("----------------------------------------------------");
+	}
+
+	private TransportStateView convertStringToTransportState(String state){
+		switch(state){
+		case "R":return TransportStateView.REQUESTED;
+		case "Booked":return TransportStateView.BOOKED;
+		case "Budgeted":return TransportStateView.BUDGETED;
+		case "H":return TransportStateView.HEADING;
+		case "O":return TransportStateView.ONGOING;
+		case "C":return TransportStateView.COMPLETED;
+		case "F":return TransportStateView.FAILED;
+		}
+		return null;
+	}
+
+	@Override
+	public void updateTransportState(String transportId, String transportState) {
+		// TODO Auto-generated method stub
+		System.out.println("-----Updating Transport State. TransportId was: "+transportId+" new State: "+transportState);
+		transportList.get(transportId).setState(convertStringToTransportState(transportState));
+		System.out.println("----------------------------------------------");
+	}
+
+
+	@Override
+	public void updateTransportList(String transportId, TransportView transport) {
+		// TODO Auto-generated method stub
+		System.out.println("-----Updating Transport List. Transport Id was: "+transportId);
+		transportList.put(transportId, transport);
+		System.out.println("--------------------------------------------------------------");
 	}
 	
 	

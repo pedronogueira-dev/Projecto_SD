@@ -279,8 +279,12 @@ public class BrokerEndpointManager {
 		this.portImpl = null;
 		unpublishFromUDDI();
 		if(secundaryBroker!=null){
+			try{
 			secundaryBroker.port.promoteToMain();
 			secundaryBroker=null;
+			}catch(Exception e){
+				System.out.println("couldnt promote server.");
+			}
 		}
 	}
 
@@ -328,7 +332,7 @@ public class BrokerEndpointManager {
 	////	Inner Class to establish communications with
 	////				Broker Servers
 	/////////////////////////////////////////////////////////
-	private class communicationPort{
+	public class communicationPort{
 		/** WS service */
 		BrokerService service = null;
 
@@ -448,6 +452,10 @@ public class BrokerEndpointManager {
 			}
 		}
 
+//		public void clear(){
+//			System.out.println("Clearing the structures");
+//			port.clearTransports();
+//		}
 	}
 	
 }

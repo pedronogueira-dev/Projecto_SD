@@ -196,4 +196,35 @@ public class BrokerClient implements BrokerPortType {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void updateTransportId(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateTransportToDo(String transportId, String jobID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateAcceptedJobs(String companyName, String jobId, String origin, String destination, int price,
+			String state) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateTransportState(String transportId, String transportState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateTransportList(String transportId, TransportView transport) {
+		// TODO Auto-generated method stub
+		
+	}
 }

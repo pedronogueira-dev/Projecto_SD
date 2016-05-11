@@ -219,6 +219,108 @@
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
+            <xs:element name="updateTransportId">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            			<xs:element name="id" type="xs:int" minOccurs="1" maxOccurs="1"></xs:element>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportIdResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportToDo">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            			<xs:element name="TransportId"
+            				type="xs:string" minOccurs="1" maxOccurs="1">
+            			</xs:element>
+            			<xs:element name="JobID"
+            				type="xs:string" minOccurs="1" maxOccurs="1">
+            			</xs:element>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportToDoResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateAcceptedJobs">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            			<xs:element name="companyName"
+            				type="xs:string">
+            			</xs:element>
+            			<xs:element name="jobId" type="xs:string">
+            			</xs:element>
+            			<xs:element name="origin" type="xs:string">
+            			</xs:element>
+            			<xs:element name="destination"
+            				type="xs:string">
+            			</xs:element>
+            			<xs:element name="price" type="xs:int">
+            			</xs:element>
+            			<xs:element name="State"
+            				type="xs:string">
+            			</xs:element>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateAcceptedJobsResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportState">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            			<xs:element name="transportId" type="xs:string"></xs:element>
+            			<xs:element name="transportState"
+            				type="xs:string">
+            			</xs:element>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportStateResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportList">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            			<xs:element name="transportId"
+            				type="xs:string">
+            			</xs:element>
+            			<xs:element name="transport"
+            				type="tns:transportView">
+            			</xs:element>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="updateTransportListResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
         </xs:schema>
     </types>
 
@@ -299,6 +401,36 @@
     <message name="promoteToMainFault">
     	<part name="parameters" element="tns:promoteToMainFault"></part>
     </message>
+    <message name="updateTransportIdRequest">
+    	<part name="parameters" element="tns:updateTransportId"></part>
+    </message>
+    <message name="updateTransportIdResponse1">
+    	<part name="parameters" element="tns:updateTransportIdResponse1"></part>
+    </message>
+    <message name="updateTransportToDoRequest">
+    	<part name="parameters" element="tns:updateTransportToDo"></part>
+    </message>
+    <message name="updateTransportToDoResponse1">
+    	<part name="parameters" element="tns:updateTransportToDoResponse1"></part>
+    </message>
+    <message name="updateAcceptedJobsRequest">
+    	<part name="parameters" element="tns:updateAcceptedJobs"></part>
+    </message>
+    <message name="updateAcceptedJobsResponse1">
+    	<part name="parameters" element="tns:updateAcceptedJobsResponse1"></part>
+    </message>
+    <message name="updateTransportStateRequest">
+    	<part name="parameters" element="tns:updateTransportState"></part>
+    </message>
+    <message name="updateTransportStateResponse1">
+    	<part name="parameters" element="tns:updateTransportStateResponse1"></part>
+    </message>
+    <message name="updateTransportListRequest">
+    	<part name="parameters" element="tns:updateTransportList"></part>
+    </message>
+    <message name="updateTransportListResponse1">
+    	<part name="parameters" element="tns:updateTransportListResponse1"></part>
+    </message>
     <portType name="BrokerPortType">
 
         <operation name="ping">
@@ -364,6 +496,26 @@
         	<output message="tns:promoteToMainResponse1"></output>
             <fault name="ServerPromotionFault" message="tns:promoteToMainFault"></fault>
         </operation>
+        <operation name="updateTransportId">
+        	<input message="tns:updateTransportIdRequest"></input>
+        	<output message="tns:updateTransportIdResponse1"></output>
+        </operation>
+        <operation name="updateTransportToDo">
+        	<input message="tns:updateTransportToDoRequest"></input>
+        	<output message="tns:updateTransportToDoResponse1"></output>
+        </operation>
+        <operation name="updateAcceptedJobs">
+        	<input message="tns:updateAcceptedJobsRequest"></input>
+        	<output message="tns:updateAcceptedJobsResponse1"></output>
+        </operation>
+        <operation name="updateTransportState">
+        	<input message="tns:updateTransportStateRequest"></input>
+        	<output message="tns:updateTransportStateResponse1"></output>
+        </operation>
+        <operation name="updateTransportList">
+        	<input message="tns:updateTransportListRequest"></input>
+        	<output message="tns:updateTransportListResponse1"></output>
+        </operation>
     </portType>
 
     <!-- SOAP/HTTP Binding -->
@@ -376,11 +528,17 @@
     	<operation name="ping">
 
     		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
+
+    		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -390,19 +548,30 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/requestTransport" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/requestTransport" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownLocationFault">
 
     			<soap:fault use="literal" name="UnknownLocationFault" />
+
+    			<soap:fault use="literal" name="UnknownLocationFault" />
     		</fault>
     		<fault name="InvalidPriceFault">
+
+    			<soap:fault use="literal" name="InvalidPriceFault" />
 
     			<soap:fault use="literal" name="InvalidPriceFault" />
     		</fault>
@@ -410,8 +579,14 @@
 
     			<soap:fault use="literal"
     				name="UnavailableTransportFault" />
+
+    			<soap:fault use="literal"
+    				name="UnavailableTransportFault" />
     		</fault>
     		<fault name="UnavailableTransportPriceFault">
+
+    			<soap:fault use="literal"
+    				name="UnavailableTransportPriceFault" />
 
     			<soap:fault use="literal"
     				name="UnavailableTransportPriceFault" />
@@ -422,15 +597,24 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/viewTransport" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/viewTransport" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownTransportFault">
+
+    			<soap:fault use="literal" name="UnknownTransportFault" />
 
     			<soap:fault use="literal" name="UnknownTransportFault" />
     		</fault>
@@ -440,11 +624,18 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/listTransports" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/listTransports" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -454,11 +645,18 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/clearTransports" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/clearTransports" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -467,15 +665,25 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="UnavailableBrokerServerFault">
+
+    			<soap:fault use="literal"
+    				name="UnavailableBrokerServerFault" />
 
     			<soap:fault use="literal"
     				name="UnavailableBrokerServerFault" />
@@ -484,15 +692,86 @@
     	<operation name="promoteToMain">
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/promoteToMain" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/promoteToMain" />
+    		<input>
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</output>
+    		<fault name="ServerPromotionFault">
+    			<soap:fault use="literal" name="ServerPromotionFault" />
+
+    			<soap:fault use="literal" name="ServerPromotionFault" />
+    		</fault>
+    	</operation>
+    	<operation name="updateTransportId">
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportId" />
+    		<input>
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="updateTransportToDo">
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportToDo" />
+    		<input>
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="updateAcceptedJobs">
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateAcceptedJobs" />
+    		<input>
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="updateTransportState">
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportState" />
+    		<input>
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="updateTransportList">
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportList" />
     		<input>
     			<soap:body use="literal" />
     		</input>
     		<output>
     			<soap:body use="literal" />
     		</output>
-    		<fault name="ServerPromotionFault">
-    			<soap:fault use="literal" name="ServerPromotionFault" />
-    		</fault>
     	</operation>
     </binding>
 
