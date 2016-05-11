@@ -2,6 +2,8 @@ package pt.upa.broker.ws;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,13 +138,15 @@ public class BrokerPort implements BrokerPortType{
  	public String ping(String name){
  		String s="";
  		System.out.println("Incoming Connection from: "+name);
-		if(associatedTransporters ==null)
-			this.associatedTransporters=endpoint.getTransporters();
-		System.out.println("Transporters List: "+endpoint.getTransporters());
+ 		if(!isBackup){
+ 			if(associatedTransporters ==null)
+ 				this.associatedTransporters=endpoint.getTransporters();
+ 			System.out.println("Transporters List: "+endpoint.getTransporters());
 
- 		for(TransporterClient t : associatedTransporters.values()){
-			s+=t.ping(name) + "Connected" + "\n";
- 			System.out.println(t.ping(name));
+ 			for(TransporterClient t : associatedTransporters.values()){
+ 				s+=t.ping(name) + "Connected" + "\n";
+ 				System.out.println(t.ping(name));
+ 			}
  		}
  		return name+" Connected to Broker Server.\nLinked Transporters: \n"+s;
  	}
@@ -332,7 +336,7 @@ public class BrokerPort implements BrokerPortType{
 							+"\n");
 		
 		//endpoint.getSecundaryBroker().port.updateTransportList(transp.getId(), transp);
-
+		brokerConsistencyManagement();
 		return transp.getId();
 	}
 
@@ -357,7 +361,7 @@ public class BrokerPort implements BrokerPortType{
 		transportList.replace(t.getId(), t);
 		
 		//endpoint.getPort().updateTransportList(t.getId(), t);
-		
+		brokerConsistencyManagement();
 		return t;
 	}
 
@@ -366,11 +370,12 @@ public class BrokerPort implements BrokerPortType{
 			this.associatedTransporters=endpoint.getTransporters();
 		List<TransportView> list= new ArrayList<TransportView>();
 		list.addAll(transportList.values());
+		brokerConsistencyManagement();
 		return list;
 	}
 
 	public void clearTransports(){
-		
+		if(!isBackup)
 		for(TransporterClient t : associatedTransporters.values()){
 			t.clearJobs();
 		}
@@ -422,10 +427,10 @@ public class BrokerPort implements BrokerPortType{
 		// TODO Auto-generated method stub
 		System.out.print("----------------------------------------------------------");
 		System.out.println("Replicating Primary Server information to the Backup");
-		System.out.println("Current System trannsportID: "+transpId);
+		//System.out.println("Current System trannsportID: "+transpId);
 
-		System.out.println(transportListToString());
-		System.out.println(acceptedJobsToString());
+		//System.out.println(transportListToString());
+		//System.out.println(acceptedJobsToString());
 		System.out.println("_______________________________________________________");
 		if(endpoint.getSecundaryBroker()!=null){
 			endpoint.getSecundaryBroker().port.updateTransportId(transpId);
@@ -477,18 +482,18 @@ public class BrokerPort implements BrokerPortType{
 	@Override
 	public void updateTransportId(int id) {
 		// TODO Auto-generated method stub
-		System.out.println("-----Updating Transport number. Input was: "+id);
+		//System.out.println("-----Updating Transport number. Input was: "+id);
 		transpId=id;
-		System.out.println("----------------------------------------");
+		//System.out.println("----------------------------------------");
 	}
 
 
 	@Override
 	public void updateTransportToDo(String transportId, String jobID) {
 		// TODO Auto-generated method stub
-		System.out.println("-----Updating TransportToDo Map. Input was: TransportID = "+transportId + "<> JobID = "+jobID);
+		//System.out.println("-----Updating TransportToDo Map. Input was: TransportID = "+transportId + "<> JobID = "+jobID);
 		transportToJob.put(transportId, jobID);
-		System.out.println("----------------------------------------");
+		//System.out.println("----------------------------------------");
 	}
 
 	private JobStateView convertStringToJobState(String state){
@@ -519,7 +524,7 @@ public class BrokerPort implements BrokerPortType{
 	public void updateAcceptedJobs(String companyName, String jobId, String origin, String destination, int price,
 			String state) {
 		// TODO Auto-generated method stub
-		System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
+		//System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
 		JobView job = new JobView();
 		job.setCompanyName(companyName);
 		job.setJobIdentifier(jobId);
@@ -528,7 +533,7 @@ public class BrokerPort implements BrokerPortType{
 		job.setJobPrice(price);
 		job.setJobState(convertStringToJobState(state));
 		acceptedJobs.put(jobId, job);
-		System.out.println("----------------------------------------------------");
+		//System.out.println("----------------------------------------------------");
 	}
 
 	private TransportStateView convertStringToTransportState(String state){
@@ -547,35 +552,71 @@ public class BrokerPort implements BrokerPortType{
 	@Override
 	public void updateTransportState(String transportId, String transportState) {
 		// TODO Auto-generated method stub
-		System.out.println("-----Updating Transport State. TransportId was: "+transportId+" new State: "+transportState);
+		//System.out.println("-----Updating Transport State. TransportId was: "+transportId+" new State: "+transportState);
 		transportList.get(transportId).setState(convertStringToTransportState(transportState));
-		System.out.println("----------------------------------------------");
+		//System.out.println("----------------------------------------------");
 	}
 
 
 	@Override
 	public void updateTransportList(String transportId, TransportView transport) {
 		// TODO Auto-generated method stub
-		System.out.println("-----Updating Transport List. Transport Id was: "+transportId);
+	//	System.out.println("-----Updating Transport List. Transport Id was: "+transportId);
 		if(transportList.containsKey(transportId))
 			transportList.replace(transportId, transport);
 		else transportList.put(transportId, transport);
-		System.out.println("--------------------------------------------------------------");
+	//	System.out.println("--------------------------------------------------------------");
 	}
 
-
+	Timer t=new Timer();
+	
+	private class lifeProof extends TimerTask{
+		public void run(){
+			if(isBackup)
+				isAlive();
+			else amAlive();
+		}
+	}
+	
 	@Override
 	public void amAlive() {
 		// TODO Auto-generated method stub
-		
+		if(isBackup)
+			endpoint.setMainServerIsAlive(true);
+		else{
+			endpoint.getSecundaryBroker().port.amAlive();
+		//System.out.println("|||Confirmed Life");
+		t.schedule(new lifeProof(), 1000);
+		}
 	}
 
+	public void stop(){
+		t.cancel();
+		t.purge();
+	}
 
+	public void setMainServerIsAlive(boolean b){
+		if(isBackup){
+			endpoint.setMainServerIsAlive(b);
+		}
+	}
 	@Override
 	public void isAlive() {
 		// TODO Auto-generated method stub
-		
+		if(endpoint.isMainServerIsAlive()){
+			//System.out.println(">>>>>>>>>>>>>>>>>>>>LIFE CONFIRMED");
+			endpoint.setMainServerIsAlive(false);
+			t.schedule(new lifeProof(), 1500);
+		}else{
+			stop();
+			try {
+				promoteToMain();
+			} catch (PromoteToMainFault_Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Couldnt Promote");
+			}
+		}
 	}
-	
 	
 }

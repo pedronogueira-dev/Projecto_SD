@@ -5,6 +5,8 @@ import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 import javax.xml.registry.JAXRException;
@@ -20,6 +22,19 @@ public class BrokerEndpointManager {
 
 	private Map<String, TransporterClient> associatedTransporters = new TreeMap<String,TransporterClient>();
 	
+	private boolean MainServerIsAlive=false;
+	
+	public boolean isMainServerIsAlive() {
+		return MainServerIsAlive;
+	}
+	
+
+	/**
+	 * @param mainServerIsAlive the mainServerIsAlive to set
+	 */
+	public void setMainServerIsAlive(boolean mainServerIsAlive) {
+		MainServerIsAlive = mainServerIsAlive;
+	}
 	
 	/** Broker port type*/
 	private boolean brokerIsMain=false;
@@ -160,6 +175,10 @@ public class BrokerEndpointManager {
 		}
 		if(secundaryBroker!=null){
 			secundaryBroker.port.ping("::Main Broker Server::");
+			
+			portImpl.amAlive();
+			secundaryBroker.port.isAlive();
+			
 			return;}
 		throw new Exception("");
 	}
@@ -276,17 +295,18 @@ public class BrokerEndpointManager {
 				System.out.printf("Caught exception when stopping: %s%n", e);
 			}
 		}
-		portImpl.brokerConsistencyManagement();
+		//portImpl.brokerConsistencyManagement();
+		portImpl.stop();
 		this.portImpl = null;
 		unpublishFromUDDI();
-		if(secundaryBroker!=null){
-			try{
-			secundaryBroker.port.promoteToMain();
-			secundaryBroker=null;
-			}catch(Exception e){
-				System.out.println("couldnt promote server.");
-			}
-		}
+//		if(secundaryBroker!=null){
+//			try{
+//			secundaryBroker.port.promoteToMain();
+//			secundaryBroker=null;
+//			}catch(Exception e){
+//				System.out.println("couldnt promote server.");
+//			}
+//		}
 	}
 
 	/* UDDI */
@@ -334,6 +354,9 @@ public class BrokerEndpointManager {
 	////				Broker Servers
 	/////////////////////////////////////////////////////////
 	public class communicationPort{
+
+		private Timer threadTimer = new Timer();
+		
 		/** WS service */
 		BrokerService service = null;
 
@@ -452,11 +475,12 @@ public class BrokerEndpointManager {
 				requestContext.put(ENDPOINT_ADDRESS_PROPERTY, wsURL);
 			}
 		}
-
+		
 //		public void clear(){
 //			System.out.println("Clearing the structures");
 //			port.clearTransports();
 //		}
 	}
+		
 	
 }
