@@ -186,7 +186,7 @@ public class BrokerClient implements BrokerPortType {
 	}
 
 	@Override
-	public void brokerConsistencyManagement() throws BrokerConsistencyManagementFault_Exception {
+	public void brokerConsistencyManagement(){
 		// TODO Auto-generated method stub
 		
 	}
@@ -224,6 +224,18 @@ public class BrokerClient implements BrokerPortType {
 
 	@Override
 	public void updateTransportList(String transportId, TransportView transport) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void amAlive() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void isAlive() {
 		// TODO Auto-generated method stub
 		
 	}

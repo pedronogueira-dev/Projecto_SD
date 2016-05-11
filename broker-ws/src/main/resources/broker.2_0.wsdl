@@ -321,6 +321,34 @@
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
+            <xs:element name="AmAlive">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="AmAliveResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="isAlive">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="isAliveResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
         </xs:schema>
     </types>
 
@@ -431,6 +459,18 @@
     <message name="updateTransportListResponse1">
     	<part name="parameters" element="tns:updateTransportListResponse1"></part>
     </message>
+    <message name="AmAliveRequest">
+    	<part name="parameters" element="tns:AmAlive"></part>
+    </message>
+    <message name="AmAliveResponse1">
+    	<part name="parameters" element="tns:AmAliveResponse1"></part>
+    </message>
+    <message name="isAliveRequest">
+    	<part name="parameters" element="tns:isAlive"></part>
+    </message>
+    <message name="isAliveResponse1">
+    	<part name="parameters" element="tns:isAliveResponse1"></part>
+    </message>
     <portType name="BrokerPortType">
 
         <operation name="ping">
@@ -489,7 +529,6 @@
         <operation name="brokerConsistencyManagement">
         	<input message="tns:brokerConsistencyManagementRequest"></input>
         	<output message="tns:brokerConsistencyManagementResponse1"></output>
-            <fault name="UnavailableBrokerServerFault" message="tns:brokerConsistencyManagementFault"></fault>
         </operation>
         <operation name="promoteToMain">
         	<input message="tns:promoteToMainRequest"></input>
@@ -516,6 +555,14 @@
         	<input message="tns:updateTransportListRequest"></input>
         	<output message="tns:updateTransportListResponse1"></output>
         </operation>
+        <operation name="AmAlive">
+        	<input message="tns:AmAliveRequest"></input>
+        	<output message="tns:AmAliveResponse1"></output>
+        </operation>
+        <operation name="isAlive">
+        	<input message="tns:isAliveRequest"></input>
+        	<output message="tns:isAliveResponse1"></output>
+        </operation>
     </portType>
 
     <!-- SOAP/HTTP Binding -->
@@ -530,13 +577,19 @@
     		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
 
     		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
+
+    		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -551,7 +604,12 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/requestTransport" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/requestTransport" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -562,14 +620,20 @@
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownLocationFault">
 
     			<soap:fault use="literal" name="UnknownLocationFault" />
 
     			<soap:fault use="literal" name="UnknownLocationFault" />
+
+    			<soap:fault use="literal" name="UnknownLocationFault" />
     		</fault>
     		<fault name="InvalidPriceFault">
+
+    			<soap:fault use="literal" name="InvalidPriceFault" />
 
     			<soap:fault use="literal" name="InvalidPriceFault" />
 
@@ -582,8 +646,14 @@
 
     			<soap:fault use="literal"
     				name="UnavailableTransportFault" />
+
+    			<soap:fault use="literal"
+    				name="UnavailableTransportFault" />
     		</fault>
     		<fault name="UnavailableTransportPriceFault">
+
+    			<soap:fault use="literal"
+    				name="UnavailableTransportPriceFault" />
 
     			<soap:fault use="literal"
     				name="UnavailableTransportPriceFault" />
@@ -600,7 +670,12 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/viewTransport" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/viewTransport" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -611,8 +686,12 @@
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownTransportFault">
+
+    			<soap:fault use="literal" name="UnknownTransportFault" />
 
     			<soap:fault use="literal" name="UnknownTransportFault" />
 
@@ -627,13 +706,20 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/listTransports" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/listTransports" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -648,13 +734,20 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/clearTransports" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/clearTransports" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -668,7 +761,12 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
 
@@ -679,15 +777,10 @@
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
-    		<fault name="UnavailableBrokerServerFault">
 
-    			<soap:fault use="literal"
-    				name="UnavailableBrokerServerFault" />
-
-    			<soap:fault use="literal"
-    				name="UnavailableBrokerServerFault" />
-    		</fault>
     	</operation>
     	<operation name="promoteToMain">
     		<soap:operation
@@ -695,7 +788,12 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/promoteToMain" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/promoteToMain" />
     		<input>
+    			<soap:body use="literal" />
+
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
@@ -704,8 +802,12 @@
     			<soap:body use="literal" />
 
     			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
     		</output>
     		<fault name="ServerPromotionFault">
+    			<soap:fault use="literal" name="ServerPromotionFault" />
+
     			<soap:fault use="literal" name="ServerPromotionFault" />
 
     			<soap:fault use="literal" name="ServerPromotionFault" />
@@ -715,11 +817,18 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportId" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportId" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -728,11 +837,18 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportToDo" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportToDo" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -741,11 +857,18 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateAcceptedJobs" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateAcceptedJobs" />
     		<input>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
+
+    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -754,6 +877,43 @@
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportState" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportState" />
+    		<input>
+
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="updateTransportList">
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportList" />
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/updateTransportList" />
+    		<input>
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+    			<soap:body use="literal" />
+
+    			<soap:body use="literal" />
+    		</output>
+    	</operation>
+    	<operation name="AmAlive">
+
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/AmAlive" />
     		<input>
 
     			<soap:body use="literal" />
@@ -763,13 +923,16 @@
     			<soap:body use="literal" />
     		</output>
     	</operation>
-    	<operation name="updateTransportList">
+    	<operation name="isAlive">
+
     		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateTransportList" />
+    			soapAction="http://ws.broker.upa.pt/isAlive" />
     		<input>
+
     			<soap:body use="literal" />
     		</input>
     		<output>
+
     			<soap:body use="literal" />
     		</output>
     	</operation>

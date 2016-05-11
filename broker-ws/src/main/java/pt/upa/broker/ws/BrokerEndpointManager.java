@@ -276,6 +276,7 @@ public class BrokerEndpointManager {
 				System.out.printf("Caught exception when stopping: %s%n", e);
 			}
 		}
+		portImpl.brokerConsistencyManagement();
 		this.portImpl = null;
 		unpublishFromUDDI();
 		if(secundaryBroker!=null){
