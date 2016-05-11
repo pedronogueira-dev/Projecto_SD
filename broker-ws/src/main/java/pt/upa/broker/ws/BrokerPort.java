@@ -395,6 +395,39 @@ public class BrokerPort implements BrokerPortType{
 		
 		return;
 	}
+
+
+	@Override
+	public void promoteToMain() throws PromoteToMainFault_Exception {
+		// TODO Auto-generated method stub
+		if(!getIsBackup())
+			return;
+
+		endpoint.unpublishFromUDDI();
+		endpoint.setWsName("UpaBroker");
+		endpoint.setWsURL("http://localhost:8080/broker-ws/endpoint");
+		try {
+			//endpoint.publishToUDDI();
+			System.out.println("\n\nPROMOTING SERVER FROM BACKUP TO MAIN");
+			endpoint.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("Unable to Rebind");
+			throw new PromoteToMainFault_Exception("Só que não", new PromoteToMainFault());
+		}
+		setIsBackup(false);
+		try {
+			endpoint.registerTransporter();
+		} catch (JAXRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		associatedTransporters=getAssociatedTransporters();
+		
+		endpoint.awaitConnections();
+		
+	}
 	
 	
 }

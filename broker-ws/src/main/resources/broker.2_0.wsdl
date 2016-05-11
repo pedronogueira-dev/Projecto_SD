@@ -198,6 +198,27 @@
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
+            <xs:element name="promoteToMain">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="promoteToMainResponse1">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            <xs:element name="promoteToMainFault">
+            	<xs:complexType>
+            		<xs:sequence>
+
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
         </xs:schema>
     </types>
 
@@ -269,6 +290,15 @@
     <message name="brokerConsistencyManagementFault">
     	<part name="parameters" element="tns:brokerConsistencyManagementFault"></part>
     </message>
+    <message name="promoteToMainRequest">
+    	<part name="parameters" element="tns:promoteToMain"></part>
+    </message>
+    <message name="promoteToMainResponse1">
+    	<part name="parameters" element="tns:promoteToMainResponse1"></part>
+    </message>
+    <message name="promoteToMainFault">
+    	<part name="parameters" element="tns:promoteToMainFault"></part>
+    </message>
     <portType name="BrokerPortType">
 
         <operation name="ping">
@@ -328,6 +358,11 @@
         	<input message="tns:brokerConsistencyManagementRequest"></input>
         	<output message="tns:brokerConsistencyManagementResponse1"></output>
             <fault name="UnavailableBrokerServerFault" message="tns:brokerConsistencyManagementFault"></fault>
+        </operation>
+        <operation name="promoteToMain">
+        	<input message="tns:promoteToMainRequest"></input>
+        	<output message="tns:promoteToMainResponse1"></output>
+            <fault name="ServerPromotionFault" message="tns:promoteToMainFault"></fault>
         </operation>
     </portType>
 
@@ -429,17 +464,34 @@
     		</output>
     	</operation>
     	<operation name="brokerConsistencyManagement">
+
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
+    		<input>
+
+    			<soap:body use="literal" />
+    		</input>
+    		<output>
+
+    			<soap:body use="literal" />
+    		</output>
+    		<fault name="UnavailableBrokerServerFault">
+
+    			<soap:fault use="literal"
+    				name="UnavailableBrokerServerFault" />
+    		</fault>
+    	</operation>
+    	<operation name="promoteToMain">
+    		<soap:operation
+    			soapAction="http://ws.broker.upa.pt/promoteToMain" />
     		<input>
     			<soap:body use="literal" />
     		</input>
     		<output>
     			<soap:body use="literal" />
     		</output>
-    		<fault name="UnavailableBrokerServerFault">
-    			<soap:fault use="literal"
-    				name="UnavailableBrokerServerFault" />
+    		<fault name="ServerPromotionFault">
+    			<soap:fault use="literal" name="ServerPromotionFault" />
     		</fault>
     	</operation>
     </binding>

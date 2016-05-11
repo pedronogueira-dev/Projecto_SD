@@ -13,6 +13,7 @@ import pt.upa.broker.ws.BrokerConsistencyManagementFault_Exception;
 import pt.upa.broker.ws.BrokerPortType;
 import pt.upa.broker.ws.BrokerService;
 import pt.upa.broker.ws.InvalidPriceFault_Exception;
+import pt.upa.broker.ws.PromoteToMainFault_Exception;
 import pt.upa.broker.ws.TransportView;
 import pt.upa.broker.ws.UnavailableTransportFault_Exception;
 import pt.upa.broker.ws.UnavailableTransportPriceFault_Exception;
@@ -186,6 +187,12 @@ public class BrokerClient implements BrokerPortType {
 
 	@Override
 	public void brokerConsistencyManagement() throws BrokerConsistencyManagementFault_Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void promoteToMain() throws PromoteToMainFault_Exception {
 		// TODO Auto-generated method stub
 		
 	}

@@ -28,6 +28,41 @@ public class BrokerEndpointManager {
 		brokerIsMain=isMain;
 	}
 	
+	/**
+	 * @return the uddiURL
+	 */
+	public String getUddiURL() {
+		return uddiURL;
+	}
+
+	/**
+	 * @param uddiURL the uddiURL to set
+	 */
+	public void setUddiURL(String uddiURL) {
+		this.uddiURL = uddiURL;
+	}
+
+	/**
+	 * @return the wsURL
+	 */
+	public String getWsURL() {
+		return wsURL;
+	}
+
+	/**
+	 * @param wsURL the wsURL to set
+	 */
+	public void setWsURL(String wsURL) {
+		this.wsURL = wsURL;
+	}
+
+	/**
+	 * @param wsName the wsName to set
+	 */
+	public void setWsName(String wsName) {
+		this.wsName = wsName;
+	}
+
 	public boolean brokerIsMain(){
 		return brokerIsMain;
 	}
@@ -204,7 +239,7 @@ public class BrokerEndpointManager {
 		}
 		publishToUDDI();
 		registerTransporter();
-		
+		secundaryBroker=null;
 		try{
 			registerSecundaryServer();
 		}catch(Exception e){
@@ -243,7 +278,10 @@ public class BrokerEndpointManager {
 		}
 		this.portImpl = null;
 		unpublishFromUDDI();
-		//secundaryBroker.promoteServer();
+		if(secundaryBroker!=null){
+			secundaryBroker.port.promoteToMain();
+			secundaryBroker=null;
+		}
 	}
 
 	/* UDDI */
@@ -308,6 +346,41 @@ public class BrokerEndpointManager {
 
 		public String getWsURL() {
 			return wsURL;
+		}
+
+		/**
+		 * @return the uddiURL
+		 */
+		public String getUddiURL() {
+			return uddiURL;
+		}
+
+		/**
+		 * @param uddiURL the uddiURL to set
+		 */
+		public void setUddiURL(String uddiURL) {
+			this.uddiURL = uddiURL;
+		}
+
+		/**
+		 * @return the wsName
+		 */
+		public String getWsName() {
+			return wsName;
+		}
+
+		/**
+		 * @param wsName the wsName to set
+		 */
+		public void setWsName(String wsName) {
+			this.wsName = wsName;
+		}
+
+		/**
+		 * @param wsURL the wsURL to set
+		 */
+		public void setWsURL(String wsURL) {
+			this.wsURL = wsURL;
 		}
 
 		/** output option **/
