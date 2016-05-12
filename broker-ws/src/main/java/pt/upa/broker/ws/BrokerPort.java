@@ -31,12 +31,12 @@ import pt.upa.transporter.ws.cli.*;
 )
 public class BrokerPort implements BrokerPortType{
 
-	private Map<String, TransporterClient> associatedTransporters=null;//new TreeMap<String, TransporterClient>();
+	private Map<String, TransporterClient> associatedTransporters=new TreeMap<String, TransporterClient>();//new TreeMap<String, TransporterClient>();
 	private Map<String, TransportView> transportList=new TreeMap<String, TransportView>();
 	private Map<String,String> transportToJob=new TreeMap<String,String>();
 	private Map<String, JobView> acceptedJobs=new TreeMap<String, JobView>();
 
-	private int transpId=1;
+	private int transpId=0;
 	/**
 	 * @return the associatedTransporters
 	 */
@@ -206,7 +206,7 @@ public class BrokerPort implements BrokerPortType{
 	public String requestTransport(String origin, String destination, int price) throws UnknownLocationFault_Exception,
 	InvalidPriceFault_Exception, UnavailableTransportFault_Exception, UnavailableTransportPriceFault_Exception
 	{	
-		if(associatedTransporters ==null)
+		if(associatedTransporters.isEmpty())
 			this.associatedTransporters=endpoint.getTransporters();
 		if(origin==null)
 			throw new UnknownLocationFault_Exception("Origin must be provided. On input as: "+origin, new UnknownLocationFault());
@@ -344,7 +344,7 @@ public class BrokerPort implements BrokerPortType{
 	{
 		System.out.println("INPUT: "+id);
 		System.out.println(acceptedJobsToString());
-		if(associatedTransporters ==null)
+		if(associatedTransporters.isEmpty())
 			this.associatedTransporters=endpoint.getTransporters();
 		if(id==null){
 			throw new UnknownTransportFault_Exception("Invalid id. Transport Id must not be null", new UnknownTransportFault());
@@ -357,8 +357,12 @@ public class BrokerPort implements BrokerPortType{
 		
 		//String jId = transportToJob.get(id);
 		JobView j=acceptedJobs.get(id);
-		j=associatedTransporters.get(j.getCompanyName()).jobStatus(j.getJobIdentifier());
-		acceptedJobs.replace(id, j);
+		System.out.println("ID: "+j.getJobPrice() +"\nCompanyName: "+j.getCompanyName()+"\n");
+		if(!associatedTransporters.isEmpty()){
+			System.out.println(associatedTransporters);
+			j=associatedTransporters.get(j.getCompanyName()).jobStatus(j.getJobIdentifier());
+			acceptedJobs.replace(id, j);
+			}
 		t=convertJobIntoTransport(j, t.getId());
 		transportList.replace(t.getId(), t);
 		
@@ -368,7 +372,7 @@ public class BrokerPort implements BrokerPortType{
 	}
 
 	public List<TransportView> listTransports(){
-		if(associatedTransporters ==null)
+		if(associatedTransporters.isEmpty())
 			this.associatedTransporters=endpoint.getTransporters();
 		List<TransportView> list= new ArrayList<TransportView>();
 		list.addAll(transportList.values());
@@ -433,10 +437,9 @@ public class BrokerPort implements BrokerPortType{
 			return;
 		System.out.print("----------------------------------------------------------");
 		System.out.println("Replicating Primary Server information to the Backup");
-		//System.out.println("Current System trannsportID: "+transpId);
-
-		//System.out.println(transportListToString());
-		//System.out.println(acceptedJobsToString());
+		System.out.println("Current System trannsportID: "+transpId);
+		System.out.println(transportListToString());
+		System.out.println(acceptedJobsToString());
 		System.out.println("_______________________________________________________");
 		if(endpoint.getSecundaryBroker()!=null){
 			endpoint.getSecundaryBroker().port.updateTransportId(transpId);
@@ -498,18 +501,18 @@ public class BrokerPort implements BrokerPortType{
 	@Override
 	public void updateTransportId(int id) {
 		// TODO Auto-generated method stub
-		//System.out.println("-----Updating Transport number. Input was: "+id);
+		System.out.println("-----Updating Transport number. Input was: "+id);
 		transpId=id;
-		//System.out.println("----------------------------------------");
+		System.out.println("----------------------------------------");
 	}
 
 
 	@Override
 	public void updateTransportToDo(String transportId, String jobID) {
 		// TODO Auto-generated method stub
-		//System.out.println("-----Updating TransportToDo Map. Input was: TransportID = "+transportId + "<> JobID = "+jobID);
+		System.out.println("-----Updating TransportToDo Map. Input was: TransportID = "+transportId + "<> JobID = "+jobID);
 		transportToJob.put(transportId, jobID);
-		//System.out.println("----------------------------------------");
+		System.out.println("----------------------------------------");
 	}
 
 	private JobStateView convertStringToJobState(String state){
@@ -540,7 +543,7 @@ public class BrokerPort implements BrokerPortType{
 	public void updateAcceptedJobs(String id,String companyName, String jobId, String origin, String destination, int price,
 			String state) {
 		// TODO Auto-generated method stub
-		//System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
+		System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
 		JobView job = new JobView();
 		job.setCompanyName(companyName);
 		job.setJobIdentifier(jobId);
@@ -549,7 +552,7 @@ public class BrokerPort implements BrokerPortType{
 		job.setJobPrice(price);
 		job.setJobState(convertStringToJobState(state));
 		acceptedJobs.put(id, job);
-		//System.out.println("----------------------------------------------------");
+		System.out.println("----------------------------------------------------");
 	}
 
 	private TransportStateView convertStringToTransportState(String state){
@@ -568,20 +571,20 @@ public class BrokerPort implements BrokerPortType{
 	@Override
 	public void updateTransportState(String transportId, String transportState) {
 		// TODO Auto-generated method stub
-		//System.out.println("-----Updating Transport State. TransportId was: "+transportId+" new State: "+transportState);
+		System.out.println("-----Updating Transport State. TransportId was: "+transportId+" new State: "+transportState);
 		transportList.get(transportId).setState(convertStringToTransportState(transportState));
-		//System.out.println("----------------------------------------------");
+		System.out.println("----------------------------------------------");
 	}
 
 
 	@Override
 	public void updateTransportList(String transportId, TransportView transport) {
 		// TODO Auto-generated method stub
-	//	System.out.println("-----Updating Transport List. Transport Id was: "+transportId);
+		System.out.println("-----Updating Transport List. Transport Id was: "+transportId);
 		if(transportList.containsKey(transportId))
 			transportList.replace(transportId, transport);
 		else transportList.put(transportId, transport);
-	//	System.out.println("--------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------");
 	}
 
 	Timer t=new Timer();

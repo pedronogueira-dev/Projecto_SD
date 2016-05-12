@@ -282,6 +282,7 @@ public class BrokerEndpointManager {
 	}
 
 	public void stop() throws Exception {
+		portImpl.stop();
 		try {
 			if (endpoint != null) {
 				// stop endpoint
@@ -296,7 +297,7 @@ public class BrokerEndpointManager {
 			}
 		}
 		//portImpl.brokerConsistencyManagement();
-		portImpl.stop();
+
 		this.portImpl = null;
 		unpublishFromUDDI();
 //		if(secundaryBroker!=null){

@@ -53,7 +53,7 @@ public class BrokerClientApplication {
 		System.out.println("ID: "+t.getId()+"\nState: "+t.getState());
 		
 		System.out.println("------------------------------");
-		Thread.sleep(20000);
+		Thread.sleep(5000);
 		System.out.println("Print List: "+client.listTransports().get(0).toString());
 		t=client.viewTransport(id);
 		System.out.print("ID:"+t.getId()+"\nState: "+t.getState() +"\nPrice: "+t.getPrice());
