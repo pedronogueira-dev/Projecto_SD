@@ -321,7 +321,7 @@ public class BrokerPort implements BrokerPortType{
 		transportToJob.put(transp.getId(), bestOption.getJobIdentifier());
 		//endpoint.getSecundaryBroker().port.updateTransportToDo(transp.getId(), bestOption.getJobIdentifier());
 		
-		acceptedJobs.put(bestOption.getJobIdentifier(), bestOption);
+		acceptedJobs.put(transp.getId(), bestOption);
 		//endpoint.getSecundaryBroker().port.updateAcceptedJobs(bestOption.getCompanyName(), bestOption.getJobIdentifier(), bestOption.getJobOrigin(), bestOption.getJobDestination(), bestOption.getJobPrice(), stateToString(bestOption.getJobState()));
 		
 		transp=transportList.get(transp.getId());
@@ -342,6 +342,8 @@ public class BrokerPort implements BrokerPortType{
 
 	public TransportView viewTransport(String id) throws UnknownTransportFault_Exception
 	{
+		System.out.println("INPUT: "+id);
+		System.out.println(acceptedJobsToString());
 		if(associatedTransporters ==null)
 			this.associatedTransporters=endpoint.getTransporters();
 		if(id==null){
@@ -353,10 +355,10 @@ public class BrokerPort implements BrokerPortType{
 			throw new UnknownTransportFault_Exception("Couldn't find Transport: "+id, new UnknownTransportFault());
 		}
 		
-		String jId = transportToJob.get(id);
-		JobView j=acceptedJobs.get(jId);
+		//String jId = transportToJob.get(id);
+		JobView j=acceptedJobs.get(id);
 		j=associatedTransporters.get(j.getCompanyName()).jobStatus(j.getJobIdentifier());
-		acceptedJobs.replace(jId, j);
+		acceptedJobs.replace(id, j);
 		t=convertJobIntoTransport(j, t.getId());
 		transportList.replace(t.getId(), t);
 		
@@ -391,6 +393,8 @@ public class BrokerPort implements BrokerPortType{
 			endpoint.getSecundaryBroker().port.clearTransports();
 			System.out.println("clearing Broker Information on Backup server.");
 		}
+		System.out.println(transportListToString());
+		System.out.println(acceptedJobsToString());
 		System.out.println("<<<<End OF ClearTransports>>>>>");
 		return;
 	}
@@ -425,6 +429,8 @@ public class BrokerPort implements BrokerPortType{
 	@Override
 	public void brokerConsistencyManagement(){
 		// TODO Auto-generated method stub
+		if(endpoint.getSecundaryBroker()==null)
+			return;
 		System.out.print("----------------------------------------------------------");
 		System.out.println("Replicating Primary Server information to the Backup");
 		//System.out.println("Current System trannsportID: "+transpId);
@@ -436,8 +442,11 @@ public class BrokerPort implements BrokerPortType{
 			endpoint.getSecundaryBroker().port.updateTransportId(transpId);
 			for(String s : transportList.keySet())
 				endpoint.getSecundaryBroker().port.updateTransportList(s, transportList.get(s));
-			for(JobView j : acceptedJobs.values())
-				endpoint.getSecundaryBroker().port.updateAcceptedJobs(j.getCompanyName(), j.getJobIdentifier(), j.getJobOrigin(), j.getJobDestination(), j.getJobPrice(), convertJobStateToString(j.getJobState()));
+			for(String s : acceptedJobs.keySet()){
+				//System.out.println("JOB ID:"+j.getJobIdentifier());
+				JobView j=acceptedJobs.get(s);
+				endpoint.getSecundaryBroker().port.updateAcceptedJobs(s, j.getCompanyName(), j.getJobIdentifier(), j.getJobOrigin(), j.getJobDestination(), j.getJobPrice(), convertJobStateToString(j.getJobState()));
+				}
 		}
 		return;
 	}
@@ -449,7 +458,7 @@ public class BrokerPort implements BrokerPortType{
 		if(!getIsBackup())
 			return;
 		
-		brokerConsistencyManagement();
+		//brokerConsistencyManagement();
 		
 		endpoint.unpublishFromUDDI();
 		endpoint.setWsName("UpaBroker");
@@ -473,7 +482,14 @@ public class BrokerPort implements BrokerPortType{
 		}
 		associatedTransporters=getAssociatedTransporters();
 		
+		System.out.println("Current System trannsportID: "+transpId);
+
+//		System.out.println(transportListToString());
+//		System.out.println(acceptedJobsToString());
+		
 		endpoint.awaitConnections();
+		
+		
 		
 	}
 
@@ -521,7 +537,7 @@ public class BrokerPort implements BrokerPortType{
 	}
 	
 	@Override
-	public void updateAcceptedJobs(String companyName, String jobId, String origin, String destination, int price,
+	public void updateAcceptedJobs(String id,String companyName, String jobId, String origin, String destination, int price,
 			String state) {
 		// TODO Auto-generated method stub
 		//System.out.println("-----Updating AcceptedJobs List. New Transport was:\nCompanyName: "+companyName+"\nJobId: "+jobId+"\nOrigin: "+origin+"\nDestination: "+destination+"\nPrice: "+price+"\nState: "+state);
@@ -532,7 +548,7 @@ public class BrokerPort implements BrokerPortType{
 		job.setJobDestination(destination);
 		job.setJobPrice(price);
 		job.setJobState(convertStringToJobState(state));
-		acceptedJobs.put(jobId, job);
+		acceptedJobs.put(id, job);
 		//System.out.println("----------------------------------------------------");
 	}
 

@@ -210,7 +210,7 @@ public class BrokerClient implements BrokerPortType {
 	}
 
 	@Override
-	public void updateAcceptedJobs(String companyName, String jobId, String origin, String destination, int price,
+	public void updateAcceptedJobs(String id, String companyName, String jobId, String origin, String destination, int price,
 			String state) {
 		// TODO Auto-generated method stub
 		

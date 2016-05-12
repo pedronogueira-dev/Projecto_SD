@@ -1,5 +1,6 @@
 package pt.upa.broker;
 
+import pt.upa.broker.ws.TransportView;
 import pt.upa.broker.ws.cli.BrokerClient;
 
 
@@ -42,5 +43,21 @@ public class BrokerClientApplication {
         String result = client.ping("client");
         System.out.println(result);
 
+
+		
+        client.clearTransports();
+		String id = client.requestTransport("Porto", "Lisboa", 7);
+		//client.requestTransport("Lisboa", "Lisboa", 7);
+		TransportView t = client.viewTransport(id);
+		System.out.println("Transport id: "+id);
+		System.out.println("ID: "+t.getId()+"\nState: "+t.getState());
+		
+		System.out.println("------------------------------");
+		Thread.sleep(20000);
+		System.out.println("Print List: "+client.listTransports().get(0).toString());
+		t=client.viewTransport(id);
+		System.out.print("ID:"+t.getId()+"\nState: "+t.getState() +"\nPrice: "+t.getPrice());
+		
+        
     }
 }

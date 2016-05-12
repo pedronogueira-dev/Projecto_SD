@@ -258,7 +258,9 @@
             	<xs:complexType>
             		<xs:sequence>
 
-            			<xs:element name="companyName"
+                        <xs:element name="id" type="xs:string">
+            			</xs:element>
+                        <xs:element name="companyName"
             				type="xs:string">
             			</xs:element>
             			<xs:element name="jobId" type="xs:string">
@@ -270,9 +272,8 @@
             			</xs:element>
             			<xs:element name="price" type="xs:int">
             			</xs:element>
-            			<xs:element name="State"
-            				type="xs:string">
-            			</xs:element>
+            			<xs:element name="State" type="xs:string">
+            			</xs:element>
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
@@ -574,24 +575,18 @@
     		transport="http://schemas.xmlsoap.org/soap/http" />
     	<operation name="ping">
 
-    		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
 
-    		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
 
     		<soap:operation soapAction="http://ws.broker.upa.pt/ping" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -599,64 +594,44 @@
 
     	<operation name="requestTransport">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/requestTransport" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/requestTransport" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/requestTransport" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownLocationFault">
 
-    			<soap:fault use="literal" name="UnknownLocationFault" />
 
-    			<soap:fault use="literal" name="UnknownLocationFault" />
 
     			<soap:fault use="literal" name="UnknownLocationFault" />
     		</fault>
     		<fault name="InvalidPriceFault">
 
-    			<soap:fault use="literal" name="InvalidPriceFault" />
 
-    			<soap:fault use="literal" name="InvalidPriceFault" />
 
     			<soap:fault use="literal" name="InvalidPriceFault" />
     		</fault>
     		<fault name="UnavailableTransportFault">
 
-    			<soap:fault use="literal"
-    				name="UnavailableTransportFault" />
 
-    			<soap:fault use="literal"
-    				name="UnavailableTransportFault" />
 
     			<soap:fault use="literal"
     				name="UnavailableTransportFault" />
     		</fault>
     		<fault name="UnavailableTransportPriceFault">
 
-    			<soap:fault use="literal"
-    				name="UnavailableTransportPriceFault" />
 
-    			<soap:fault use="literal"
-    				name="UnavailableTransportPriceFault" />
 
     			<soap:fault use="literal"
     				name="UnavailableTransportPriceFault" />
@@ -665,35 +640,25 @@
 
     	<operation name="viewTransport">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/viewTransport" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/viewTransport" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/viewTransport" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     		<fault name="UnknownTransportFault">
 
-    			<soap:fault use="literal" name="UnknownTransportFault" />
 
-    			<soap:fault use="literal" name="UnknownTransportFault" />
 
     			<soap:fault use="literal" name="UnknownTransportFault" />
     		</fault>
@@ -701,27 +666,19 @@
 
     	<operation name="listTransports">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/listTransports" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/listTransports" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/listTransports" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
@@ -729,183 +686,144 @@
 
     	<operation name="clearTransports">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/clearTransports" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/clearTransports" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/clearTransports" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     	</operation>
     	<operation name="brokerConsistencyManagement">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/brokerConsistencyManagement" />
     		<input>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
 
     	</operation>
     	<operation name="promoteToMain">
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/promoteToMain" />
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/promoteToMain" />
+
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/promoteToMain" />
     		<input>
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
+
 
     			<soap:body use="literal" />
     		</input>
     		<output>
-    			<soap:body use="literal" />
 
-    			<soap:body use="literal" />
+
 
     			<soap:body use="literal" />
     		</output>
     		<fault name="ServerPromotionFault">
-    			<soap:fault use="literal" name="ServerPromotionFault" />
 
-    			<soap:fault use="literal" name="ServerPromotionFault" />
+
 
     			<soap:fault use="literal" name="ServerPromotionFault" />
     		</fault>
     	</operation>
     	<operation name="updateTransportId">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateTransportId" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportId" />
     		<input>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     	</operation>
     	<operation name="updateTransportToDo">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateTransportToDo" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportToDo" />
     		<input>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     	</operation>
     	<operation name="updateAcceptedJobs">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateAcceptedJobs" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateAcceptedJobs" />
     		<input>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     	</operation>
     	<operation name="updateTransportState">
 
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateTransportState" />
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportState" />
     		<input>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</input>
     		<output>
 
-    			<soap:body use="literal" />
 
     			<soap:body use="literal" />
     		</output>
     	</operation>
     	<operation name="updateTransportList">
-    		<soap:operation
-    			soapAction="http://ws.broker.upa.pt/updateTransportList" />
+
 
     		<soap:operation
     			soapAction="http://ws.broker.upa.pt/updateTransportList" />
     		<input>
-    			<soap:body use="literal" />
+
 
     			<soap:body use="literal" />
     		</input>
     		<output>
-    			<soap:body use="literal" />
+
 
     			<soap:body use="literal" />
     		</output>
