@@ -101,15 +101,25 @@ mvn exec:java
 
 ### Serviço BROKER
 
-[1] Construir e executar **servidor**
-
+[1] Construir
 
 ```
 cd ../broker-ws
 mvn clean generate-sources install
-mvn exec:java
+
 ```
 
+[2] Executar o executar **servidor backup**
+
+```
+mvn -Dws.j=9 exec:java
+```
+
+[3] Executar o executar **servidor backup**
+
+```
+mvn exec:java
+```
 
 [2] Construir **cliente** e executar testes
 
