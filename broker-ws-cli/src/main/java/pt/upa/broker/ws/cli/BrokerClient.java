@@ -118,7 +118,7 @@ public class BrokerClient implements BrokerPortType {
 			///////// ADDED TIMEOUT CODE
 			//////////////////////////////////////////////////////
 			
-			 int connectionTimeout = 20000;
+			 int connectionTimeout = 25000;
 	            // The connection timeout property has different names in different versions of JAX-WS
 	            // Set them all to avoid compatibility issues
 	            final List<String> CONN_TIME_PROPS = new ArrayList<String>();

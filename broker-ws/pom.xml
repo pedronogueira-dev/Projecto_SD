@@ -22,13 +22,15 @@
 		<wsdl.filename>broker.2_0.wsdl</wsdl.filename>
 
 		<mainclass>pt.upa.broker.BrokerApplication</mainclass>
-		<!-- <ws.i>0</ws.i>
-		<ws.port>808${ws.i}</ws.port>
-		<ws.url>http://localhost:${ws.port}/broker-ws/endpoint</ws.url>
-		-->
-		<ws.url>http://localhost:8080/broker-ws/endpoint</ws.url>
-		<ws.type>Central</ws.type>
+		<ws.j>8</ws.j>
+		<ws.i>0</ws.i>
+		<ws.port>80${ws.j}${ws.i}</ws.port>
+		<ws.urlName>localhost</ws.urlName>
+		<ws.url>http://${ws.urlName}:${ws.port}/broker-ws/endpoint</ws.url>
 		
+		<!-- <ws.url>http://localhost:8080/broker-ws/endpoint</ws.url>
+		<ws.type>Central</ws.type>
+		-->
 		<ws.name>UpaBroker</ws.name>
 		<uddi.url>http://localhost:9090</uddi.url>
 	</properties>

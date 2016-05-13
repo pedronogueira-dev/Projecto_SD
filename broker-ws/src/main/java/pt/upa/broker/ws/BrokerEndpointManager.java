@@ -28,6 +28,12 @@ public class BrokerEndpointManager {
 		return MainServerIsAlive;
 	}
 	
+	
+	private String mainUddiUrl=null;
+
+	public String getMainUddiUrl(){
+		return mainUddiUrl;
+	}
 
 	/**
 	 * @param mainServerIsAlive the mainServerIsAlive to set
@@ -139,23 +145,42 @@ public class BrokerEndpointManager {
 		this.verbose = verbose;
 	}
 
+//	/** constructor with provided UDDI location, WS name, and WS URL */
+//	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL, String type) {
+//		this(uddiURL,wsName,wsURL);
+//		
+//		if(!type.equals("Central")){
+////			try{
+////				registerSecundaryServer();
+////			}catch(Exception e){
+////				System.out.println("NO SECUNDARY/BACKUP BROKERS REGISTERED ON UDDI!");
+////			}
+//		//}else{
+//			System.out.println("Secundary Server");
+//			this.wsName="UpaBrokerBackup";
+//			this.wsURL = "http://localhost:8099/broker-ws/endpoint";
+//			//portImpl=new BrokerPort(this);
+//			portImpl.setIsBackup(true);
+//		}
+//	}
+	
+	
 	/** constructor with provided UDDI location, WS name, and WS URL */
-	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL, String type) {
-		this(uddiURL,wsName,wsURL);
+	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL) {
 		
-		if(!type.equals("Central")){
-//			try{
-//				registerSecundaryServer();
-//			}catch(Exception e){
-//				System.out.println("NO SECUNDARY/BACKUP BROKERS REGISTERED ON UDDI!");
-//			}
-		//}else{
-			System.out.println("Secundary Server");
+		this.uddiURL=uddiURL;
+		this.wsURL=wsURL;
+		if(!wsURL.equals("http://localhost:8080/broker-ws/endpoint")){
+			System.out.println("\nSecundary Server");
 			this.wsName="UpaBrokerBackup";
-			this.wsURL = "http://localhost:8099/broker-ws/endpoint";
 			//portImpl=new BrokerPort(this);
 			portImpl.setIsBackup(true);
 		}
+		else{
+			this.wsName=wsName;
+		}
+		
+		System.out.println("\n\nIS BACKUP: "+portImpl.getIsBackup());
 	}
 	
 	
@@ -164,12 +189,20 @@ public class BrokerEndpointManager {
 		
 		if(portImpl.getIsBackup())
 			return;
+//		Collection<String> serverUddiURL= uddiNaming.list("UpaBroker");
 		Collection<String> registeredBrokers = uddiNaming.list("UpaBrokerBackup");
+//		String server="";
+//		for(String s: serverUddiURL){
+//			server=s;
+//			System.out.println(server);
+//			break;
+//		}
 		System.out.println("Broker List:\n"+registeredBrokers);
 		System.out.println("\n\nCONNECTING TO SecundaryBroker:");
 		for(String s : registeredBrokers){
 			if(!s.equals(wsURL)){
 				secundaryBroker= new communicationPort(s);
+//				secundaryBroker.setMainUddiUrl(server);
 				continue;
 			}
 		}
@@ -183,12 +216,12 @@ public class BrokerEndpointManager {
 		throw new Exception("");
 	}
 
-	/** constructor with provided UDDI location, WS name, and WS URL */
-	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL) {
-		this.uddiURL = uddiURL;
-		this.wsName = wsName;
-		this.wsURL = wsURL;
-	}
+//	/** constructor with provided UDDI location, WS name, and WS URL */
+//	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL) {
+//		this.uddiURL = uddiURL;
+//		this.wsName = wsName;
+//		this.wsURL = wsURL;
+//	}
 
 	/** constructor with provided web service URL */
 	public BrokerEndpointManager(String wsURL) {
@@ -358,6 +391,13 @@ public class BrokerEndpointManager {
 
 		private Timer threadTimer = new Timer();
 		
+		//private String mainUddiUrl=null;
+		public void setMainUddiUrl(String s){
+			mainUddiUrl=s;
+		}
+		public String getMainUddiUrl(){
+			return mainUddiUrl;
+		}
 		/** WS service */
 		BrokerService service = null;
 

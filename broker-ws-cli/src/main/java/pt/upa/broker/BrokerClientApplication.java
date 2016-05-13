@@ -43,8 +43,7 @@ public class BrokerClientApplication {
         String result = client.ping("client");
         System.out.println(result);
 
-
-		
+	
         client.clearTransports();
 		String id = client.requestTransport("Porto", "Lisboa", 7);
 		//client.requestTransport("Lisboa", "Lisboa", 7);
