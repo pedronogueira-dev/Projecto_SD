@@ -145,32 +145,13 @@ public class BrokerEndpointManager {
 		this.verbose = verbose;
 	}
 
-//	/** constructor with provided UDDI location, WS name, and WS URL */
-//	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL, String type) {
-//		this(uddiURL,wsName,wsURL);
-//		
-//		if(!type.equals("Central")){
-////			try{
-////				registerSecundaryServer();
-////			}catch(Exception e){
-////				System.out.println("NO SECUNDARY/BACKUP BROKERS REGISTERED ON UDDI!");
-////			}
-//		//}else{
-//			System.out.println("Secundary Server");
-//			this.wsName="UpaBrokerBackup";
-//			this.wsURL = "http://localhost:8099/broker-ws/endpoint";
-//			//portImpl=new BrokerPort(this);
-//			portImpl.setIsBackup(true);
-//		}
-//	}
-	
-	
+
 	/** constructor with provided UDDI location, WS name, and WS URL */
 	public BrokerEndpointManager(String uddiURL, String wsName, String wsURL) {
 		
 		this.uddiURL=uddiURL;
 		this.wsURL=wsURL;
-		if(!wsURL.equals("http://localhost:8080/broker-ws/endpoint")){
+		if(!wsURL.contains(":8080")){
 			System.out.println("\nSecundary Server");
 			this.wsName="UpaBrokerBackup";
 			//portImpl=new BrokerPort(this);
@@ -189,20 +170,14 @@ public class BrokerEndpointManager {
 		
 		if(portImpl.getIsBackup())
 			return;
-//		Collection<String> serverUddiURL= uddiNaming.list("UpaBroker");
+		Collection<String> serverUddiURL= uddiNaming.list("UpaBroker");
 		Collection<String> registeredBrokers = uddiNaming.list("UpaBrokerBackup");
-//		String server="";
-//		for(String s: serverUddiURL){
-//			server=s;
-//			System.out.println(server);
-//			break;
-//		}
 		System.out.println("Broker List:\n"+registeredBrokers);
 		System.out.println("\n\nCONNECTING TO SecundaryBroker:");
 		for(String s : registeredBrokers){
 			if(!s.equals(wsURL)){
 				secundaryBroker= new communicationPort(s);
-//				secundaryBroker.setMainUddiUrl(server);
+				//secundaryBroker.setMainUddiUrl(this.getUddiURL());
 				continue;
 			}
 		}
@@ -333,14 +308,6 @@ public class BrokerEndpointManager {
 
 		this.portImpl = null;
 		unpublishFromUDDI();
-//		if(secundaryBroker!=null){
-//			try{
-//			secundaryBroker.port.promoteToMain();
-//			secundaryBroker=null;
-//			}catch(Exception e){
-//				System.out.println("couldnt promote server.");
-//			}
-//		}
 	}
 
 	/* UDDI */
@@ -389,8 +356,6 @@ public class BrokerEndpointManager {
 	/////////////////////////////////////////////////////////
 	public class communicationPort{
 
-		private Timer threadTimer = new Timer();
-		
 		//private String mainUddiUrl=null;
 		public void setMainUddiUrl(String s){
 			mainUddiUrl=s;
@@ -517,10 +482,6 @@ public class BrokerEndpointManager {
 			}
 		}
 		
-//		public void clear(){
-//			System.out.println("Clearing the structures");
-//			port.clearTransports();
-//		}
 	}
 		
 	

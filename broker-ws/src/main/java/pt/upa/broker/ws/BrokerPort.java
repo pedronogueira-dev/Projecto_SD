@@ -474,7 +474,7 @@ public class BrokerPort implements BrokerPortType{
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 			System.out.println("Unable to Rebind");
-			throw new PromoteToMainFault_Exception("Só que não", new PromoteToMainFault());
+			throw new PromoteToMainFault_Exception("Unable to Rebind", new PromoteToMainFault());
 		}
 		setIsBackup(false);
 		try {
